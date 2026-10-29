@@ -1,0 +1,62 @@
+---
+title: System Architecture - Transformer From Scratch
+config:
+  theme: base
+  themeVariables:
+    fontFamily: "Inter, system-ui, sans-serif"
+    primaryColor: "#F8FAFC"
+    primaryBorderColor: "#1E293B"
+    primaryTextColor: "#1E293B"
+    lineColor: "#64748B"
+    clusterBkg: "#EEF2FF"
+    clusterBorder: "#94A3B8"
+---
+flowchart TB
+    classDef edge     fill:#F59E0B,stroke:#1E293B,color:#1E293B,stroke-width:1px;
+    classDef core     fill:#6366F1,stroke:#1E293B,color:#ffffff,stroke-width:1px;
+    classDef data     fill:#10B981,stroke:#1E293B,color:#ffffff,stroke-width:1px;
+    classDef control  fill:#0EA5E9,stroke:#1E293B,color:#ffffff,stroke-width:1px;
+    classDef obs      fill:#CBD5E1,stroke:#1E293B,color:#1E293B,stroke-width:1px;
+
+    Client([Client]):::edge
+
+    subgraph Engine["Autodiff engine (pure Python, no numerical libraries)"]
+        direction TB
+        Ops["Tensor ops<br/>matmul | softmax | layernorm | gelu | cross-entropy"]:::core
+        Backward["Reverse-mode backward<br/>topological sort of local closures"]:::core
+    end
+
+    subgraph Model["Transformer (decoder-only)"]
+        direction TB
+        Embed["Token + position embeddings"]:::core
+        Blocks["Pre-norm blocks<br/>multi-head causal attention + GELU feed-forward"]:::core
+        Head["Weight-tied output projection"]:::core
+    end
+
+    subgraph TrainLoop["Training (once at startup)"]
+        direction TB
+        Data[(Copy task<br/>seeded, disjoint splits)]:::data
+        Adam["Adam optimizer<br/>from scratch"]:::control
+    end
+
+    Weights[(Learned parameters)]:::data
+
+    subgraph Edge["Service layer (stdlib HTTP, stateless)"]
+        direction TB
+        Router["Router<br/>/health | /ready | /metrics | /generate | /evaluate | /attention"]:::core
+        Validate["Validation<br/>bounded token ids and limits"]:::control
+    end
+
+    Result["Generation + attention patterns"]:::obs
+
+    Ops --> Backward
+    Embed --> Blocks --> Head
+    Backward -.->|gradients| Adam
+    Data --> Adam -->|updates| Weights
+    Model -.-> Weights
+
+    Client -->|JSON request| Router --> Validate
+    Validate -->|token ids| Model
+    Weights -.-> Model
+    Model -->|logits / attention| Result
+    Result --> Router -->|JSON response| Client
