@@ -45,6 +45,21 @@ class CopyTask:
         return range(self.length, self.seq_len - 1)
 
 
+def _split_capacity(task: CopyTask) -> int:
+    """Return the largest per-split count that keeps train and test disjoint.
+
+    There are ``n_symbols ** length`` distinct sequences; half of them can go to
+    each split. A task with fewer than two distinct sequences cannot be split.
+    """
+
+    total = int(task.n_symbols**task.length)
+    if total < 2:
+        raise ValueError(
+            "copy task has fewer than two distinct sequences; increase --symbols or --length"
+        )
+    return total // 2
+
+
 def _unique_sequences(
     task: CopyTask, count: int, rng: random.Random, exclude: set[tuple[int, ...]]
 ) -> list[list[int]]:
@@ -65,14 +80,22 @@ def _unique_sequences(
 
 
 def train_sequences(task: CopyTask, count: int = 64, *, seed: int = 0) -> list[list[int]]:
-    """Return the training split of copy sequences."""
+    """Return the training split of copy sequences.
 
+    The number of distinct sequences is ``n_symbols ** length``. The requested
+    count is capped at half of that space so the training and held-out splits can
+    always be disjoint; for the default task the cap never binds, so behavior is
+    unchanged, while small demo configurations no longer fail to generate.
+    """
+
+    count = min(count, _split_capacity(task))
     return _unique_sequences(task, count, random.Random(seed), set())
 
 
 def test_sequences(task: CopyTask, count: int = 64, *, seed: int = 0) -> list[list[int]]:
     """Return a held-out split disjoint from :func:`train_sequences`."""
 
+    count = min(count, _split_capacity(task))
     train = {tuple(s) for s in train_sequences(task, seed=seed)}
     return _unique_sequences(task, count, random.Random(seed + 7919), train)
 

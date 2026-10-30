@@ -59,6 +59,34 @@ def test_config_rejects_bad_head_division() -> None:
         ModelConfig(vocab_size=5, context=5, d_model=10, n_head=3)
 
 
+def test_model_logits_rejects_empty_sequence() -> None:
+    import pytest
+
+    task = CopyTask()
+    model = Transformer(ModelConfig(vocab_size=task.vocab_size, context=task.seq_len), seed=0)
+    with pytest.raises(ValueError, match="non-empty"):
+        model.logits([])
+
+
+def test_small_task_splits_are_feasible_and_disjoint() -> None:
+    # Regression: for a small space (4**3 = 64) the default count of 64 per split
+    # made a disjoint train/test impossible and raised RuntimeError. The split is
+    # now capped at half the space.
+    task = CopyTask(n_symbols=4, length=3)
+    train_set = train_sequences(task, seed=0)
+    test_set = held_out_sequences(task, seed=0)
+    assert train_set and test_set
+    assert {tuple(s) for s in train_set}.isdisjoint({tuple(s) for s in test_set})
+
+
+def test_split_capacity_rejects_degenerate_task() -> None:
+    import pytest
+
+    # Only one distinct sequence exists, so no disjoint split is possible.
+    with pytest.raises(ValueError, match="two distinct"):
+        train_sequences(CopyTask(n_symbols=1, length=1), seed=0)
+
+
 def test_data_splits_disjoint_and_shaped() -> None:
     task = CopyTask(n_symbols=4, length=5)
     train_set = train_sequences(task, count=40, seed=0)

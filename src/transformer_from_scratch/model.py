@@ -159,6 +159,8 @@ class Transformer:
     def logits(self, token_ids: list[int]) -> Tensor:
         """Return ``(T, vocab)`` next-token logits for a sequence of token ids."""
 
+        if not token_ids:
+            raise ValueError("token_ids must be non-empty")
         if len(token_ids) > self.cfg.context:
             raise ValueError("sequence longer than the model context")
         tok = T.embedding(self.token_embed, token_ids)
