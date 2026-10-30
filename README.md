@@ -87,6 +87,26 @@ sharpest head places essentially all of its weight on a few source positions (en
 to zero). This is a direct, honest readout that the model learned structured, content-dependent
 attention rather than memorizing local statistics.
 
+### Scale
+
+`benchmarks/scale.py` trains one small model, then runs the from-scratch forward pass
+(`model.logits`) over progressively larger batches of held-out sequences and records
+wall-clock time, inference throughput, peak memory (`tracemalloc`), and held-out copy
+accuracy. Throughput is roughly flat near 20 sequences per second, confirming linear
+scaling in the number of sequences, while copy accuracy stays stable because the same
+trained model is applied at every size. Run with `uv run python benchmarks/scale.py`.
+
+| Sequences | Seconds | Throughput (seq/sec) | Peak memory (MiB) | Copy accuracy |
+|---:|---:|---:|---:|---:|
+| 40 | 3.85 | 10.4 | 9.99 | 0.855 |
+| 80 | 3.60 | 22.2 | 12.22 | 0.843 |
+| 160 | 7.87 | 20.3 | 17.80 | 0.856 |
+| 320 | 15.99 | 20.0 | 16.88 | 0.859 |
+
+Honest caveat: the data is synthetic, the model is deliberately tiny, and this pure-Python
+implementation is not benchmarked against compiled tensor libraries; the first row carries
+warmup overhead, so treat it as a lower bound.
+
 ## Demonstration
 
 ```text
