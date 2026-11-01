@@ -10,9 +10,12 @@ single call to ``loss.backward()`` differentiates the whole network.
 
 from __future__ import annotations
 
+import json
 import math
 import random
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any
 
 from transformer_from_scratch import tensor as T
 from transformer_from_scratch.tensor import Tensor
@@ -173,3 +176,46 @@ class Transformer:
 
     def loss(self, token_ids: list[int], targets: list[int]) -> Tensor:
         return T.cross_entropy(self.logits(token_ids), targets)
+
+    def to_state(self) -> dict[str, Any]:
+        """Serialize the config and every parameter matrix to a plain dict.
+
+        Parameters are stored in the fixed order returned by :meth:`parameters`,
+        so loading reconstructs a model with the same cfg and then copies the
+        values back in that order. This is the checkpoint format used by
+        :meth:`save` and :meth:`load`.
+        """
+
+        return {
+            "format": 1,
+            "config": asdict(self.cfg),
+            "parameters": [p.data for p in self.parameters()],
+        }
+
+    @classmethod
+    def from_state(cls, state: dict[str, Any]) -> Transformer:
+        """Rebuild a model from :meth:`to_state` output."""
+
+        cfg = ModelConfig(**state["config"])
+        model = cls(cfg)
+        saved = state["parameters"]
+        params = model.parameters()
+        if len(saved) != len(params):
+            raise ValueError("checkpoint parameter count does not match the model")
+        for param, values in zip(params, saved, strict=True):
+            if (len(values), len(values[0]) if values else 0) != param.shape:
+                raise ValueError("checkpoint parameter shape does not match the model")
+            for i in range(param.rows):
+                param.data[i] = list(values[i])
+        return model
+
+    def save(self, path: str | Path) -> None:
+        """Write a JSON checkpoint of the config and parameters to ``path``."""
+
+        Path(path).write_text(json.dumps(self.to_state()), encoding="utf-8")
+
+    @classmethod
+    def load(cls, path: str | Path) -> Transformer:
+        """Load a model from a JSON checkpoint written by :meth:`save`."""
+
+        return cls.from_state(json.loads(Path(path).read_text(encoding="utf-8")))
