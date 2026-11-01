@@ -87,6 +87,52 @@ sharpest head places essentially all of its weight on a few source positions (en
 to zero). This is a direct, honest readout that the model learned structured, content-dependent
 attention rather than memorizing local statistics.
 
+### Training on real text, not just the synthetic task
+
+The copy task isolates what attention buys, but the same model also learns real natural language.
+`benchmarks/text_training.py` trains the transformer at the **character level** on a bundled
+public-domain prose excerpt (the opening of Jane Austen's *Pride and Prejudice*, 1813) and measures
+held-out compression in **bits per character** against a unigram baseline.
+
+> Reproduce with `uv run python benchmarks/text_training.py`. Corpus: 1,718 characters, 44 distinct
+> symbols; `d_model` 32, 2 layers, context 24; held-out suffix disjoint from the training prefix.
+
+| Metric | Value |
+|---|---:|
+| **held-out compression** | **3.639 bits/char** |
+| unigram baseline | 4.303 bits/char |
+| improvement over baseline | **0.663 bits/char** |
+| final training loss (from 4.072) | 1.561 |
+
+The model compresses held-out text to **3.639 bits per character, 0.663 bits better than a unigram
+model** fit on the same data, so it has learned real conditional structure in English rather than
+only a synthetic pattern. A sampled continuation from the prompt `"It is "` produces word-like
+fragments with plausible letter statistics. The model is deliberately tiny and trained on CPU in a
+few minutes, so this measures that the architecture and optimizer learn language, not a
+state-of-the-art language model.
+
+### Independent validation: PyTorch numerical parity
+
+The hand-written autodiff is validated two ways. `tests/test_autograd.py` checks analytic gradients
+against finite differences; `tests/test_torch_parity.py` reconstructs the exact forward pass in
+**PyTorch**, loads the same weights, and asserts the logits and cross-entropy match to **better than
+1e-9**. PyTorch is an opt-in `validation` dependency group, not a runtime dependency, so the core
+library stays zero-dependency and default CI does not require it. Run the parity check with:
+
+```bash
+uv sync --group validation && uv run pytest tests/test_torch_parity.py
+```
+
+### Checkpointing
+
+A trained model serializes its configuration and every parameter to a JSON checkpoint and reloads
+to a byte-identical model, so training can be saved and resumed and a trained model can be shipped:
+
+```python
+model.save("model.json")
+restored = Transformer.load("model.json")  # restored.logits(x) == model.logits(x)
+```
+
 ### Scale
 
 `benchmarks/scale.py` trains one small model, then runs the from-scratch forward pass
@@ -182,9 +228,13 @@ All runs are deterministic given a seed. Full method and tables:
 
 ## Roadmap
 
+- [x] Train on real text and report held-out bits per character against a baseline.
+- [x] Validate the forward pass against PyTorch to a tight numerical tolerance.
+- [x] Add model checkpointing (save, load, resume).
 - [ ] Add a key-value cache so generation is linear rather than quadratic per token.
-- [ ] Add a reproduction of grokking on modular arithmetic.
-- [ ] Extend the interpretability hooks into a standalone circuit-analysis project.
+- [ ] GPU acceleration: this pure-Python engine is CPU-only and trains small models in minutes;
+      a vectorized or compiled backend would be required for larger corpora and real throughput.
+- [ ] Train on a larger corpus with a word or subword tokenizer and report validation perplexity.
 
 ## License
 

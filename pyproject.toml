@@ -15,6 +15,12 @@ dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
 ]
+# Optional, opt-in only: the independent PyTorch numerical-parity check in
+# tests/test_torch_parity.py. Not installed by default CI, so the core library
+# stays zero dependency. Run it with: uv sync --group validation && uv run pytest
+validation = [
+    "torch>=2.0",
+]
 
 [build-system]
 requires = ["hatchling"]
