@@ -43,11 +43,11 @@ is in the quality of the evidence, not the size of the model.
 
 ## Evidence it learns
 
-1. **Synthetic copy task.** Held-out copy accuracy reaches 0.903 versus 0.234 for
+1. **Synthetic copy task.** Held-out copy accuracy reaches 0.872 versus 0.234 for
    a bigram baseline fit on the same data, a gap that exists only because
    attention can copy.
 2. **Attention sharpening.** The sharpest head's peak weight over the copy region
-   rises from 0.425 to 0.981 and its entropy collapses from 1.84 to 0.00, a
+   rises from 0.425 to 0.994 and its entropy collapses from 1.55 to 0.02, a
    direct readout of learned, content-dependent attention.
 3. **Real text.** At the character level on a public-domain prose excerpt, the
    model compresses held-out text to 3.639 bits per character, 0.663 bits better

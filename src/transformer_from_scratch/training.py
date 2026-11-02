@@ -7,9 +7,10 @@ Gradients are zeroed between steps. Everything is deterministic given a seed.
 
 from __future__ import annotations
 
-import math
 import random
 from dataclasses import dataclass, field
+
+import numpy as np
 
 from transformer_from_scratch.data import CopyTask, to_inputs_targets, train_sequences
 from transformer_from_scratch.model import ModelConfig, Transformer
@@ -37,31 +38,21 @@ class Adam:
         self.params = params
         self.cfg = cfg
         self.t = 0
-        self.m = [[[0.0] * p.cols for _ in range(p.rows)] for p in params]
-        self.v = [[[0.0] * p.cols for _ in range(p.rows)] for p in params]
+        self.m = [np.zeros_like(p.data) for p in params]
+        self.v = [np.zeros_like(p.data) for p in params]
 
     def step(self) -> None:
         cfg = self.cfg
         self.t += 1
         bias1 = 1.0 - cfg.beta1**self.t
         bias2 = 1.0 - cfg.beta2**self.t
-        for idx, p in enumerate(self.params):
-            m = self.m[idx]
-            v = self.v[idx]
-            for i in range(p.rows):
-                g_row = p.grad[i]
-                p_row = p.data[i]
-                m_row = m[i]
-                v_row = v[i]
-                for j in range(p.cols):
-                    g = g_row[j]
-                    if cfg.weight_decay:
-                        g += cfg.weight_decay * p_row[j]
-                    m_row[j] = cfg.beta1 * m_row[j] + (1.0 - cfg.beta1) * g
-                    v_row[j] = cfg.beta2 * v_row[j] + (1.0 - cfg.beta2) * g * g
-                    m_hat = m_row[j] / bias1
-                    v_hat = v_row[j] / bias2
-                    p_row[j] -= cfg.learning_rate * m_hat / (math.sqrt(v_hat) + cfg.eps)
+        for p, m, v in zip(self.params, self.m, self.v, strict=True):
+            g = p.grad + cfg.weight_decay * p.data if cfg.weight_decay else p.grad
+            m *= cfg.beta1
+            m += (1.0 - cfg.beta1) * g
+            v *= cfg.beta2
+            v += (1.0 - cfg.beta2) * g * g
+            p.data -= cfg.learning_rate * (m / bias1) / (np.sqrt(v / bias2) + cfg.eps)
 
     def zero_grad(self) -> None:
         for p in self.params:
@@ -122,6 +113,4 @@ def _sum_losses(losses: list[Tensor]) -> Tensor:
 def _average_grads(params: list[Tensor], batch_size: int) -> None:
     inv = 1.0 / batch_size
     for p in params:
-        for row in p.grad:
-            for j in range(len(row)):
-                row[j] *= inv
+        p.grad *= inv

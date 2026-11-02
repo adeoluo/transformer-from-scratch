@@ -180,10 +180,7 @@ def train_char_lm(
             loss.backward()
             step_loss += loss.data[0][0]
         for param in model.parameters():
-            for i in range(param.rows):
-                row = param.grad[i]
-                for j in range(param.cols):
-                    row[j] /= batch_size
+            param.grad /= batch_size
         optimizer.step()
         losses.append(step_loss / batch_size)
 

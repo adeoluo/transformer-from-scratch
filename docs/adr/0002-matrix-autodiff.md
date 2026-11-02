@@ -23,3 +23,11 @@ topological sort runs the closures in reverse to accumulate gradients.
   transformer needs. Adding a new architecture means adding and gradient-checking new ops.
 - Every operation is validated by a finite-difference gradient check in the test suite, so the
   hand-written backward passes are held to a numerical standard rather than trusted.
+
+## Update: numpy arithmetic
+
+Each operation's forward and backward pass is still written out by hand, but the arithmetic now
+runs on 2-D numpy arrays instead of nested Python lists: a matrix multiply is one BLAS call, and
+the elementwise and row-wise operations are vectorized. Gradients match the list-based engine to
+6e-16, the finite-difference and PyTorch parity tests pass unchanged, and training is 14 to 24
+times faster. numpy is now a runtime dependency.

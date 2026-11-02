@@ -221,7 +221,7 @@ class Transformer:
         return {
             "format": 1,
             "config": asdict(self.cfg),
-            "parameters": [p.data for p in self.parameters()],
+            "parameters": [p.data.tolist() for p in self.parameters()],
         }
 
     @classmethod

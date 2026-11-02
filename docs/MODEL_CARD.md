@@ -2,7 +2,8 @@
 
 ## Overview
 - **What it is:** a from-scratch reverse-mode autodiff engine and a small decoder-only
-  transformer language model, trained on a synthetic copy task. No numerical libraries.
+  transformer language model, trained on a synthetic copy task. Hand-written forward and
+  backward passes over numpy arrays; no automatic differentiation library.
 - **Base model:** none. Parameters are initialized and trained from scratch.
 - **Version and date:** 0.1.0, 2026.
 
@@ -13,11 +14,12 @@
 
 ## Out-of-scope / prohibited use
 - Not a language model for real text; the vocabulary and task are synthetic.
-- Not a performance reference; execution in interpreted Python is slow by design.
+- Not a performance reference; it runs one sequence at a time on the CPU.
 - The accuracy numbers describe a copy task and must not be cited as a language benchmark.
 
 ## Performance
-- Held-out copy accuracy 0.903 versus 0.234 for a bigram baseline.
+- Held-out copy accuracy 0.872 versus 0.234 for a bigram baseline (seed 0; 0.984 ± 0.041 over
+  8 seeds in the research study).
 - Gradients verified against finite differences to better than 1e-4.
 - Full method and tables: [`EVALUATION_REPORT.md`](EVALUATION_REPORT.md).
 

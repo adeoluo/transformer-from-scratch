@@ -137,8 +137,8 @@ per-run numbers behind every table below are in
 All numbers are held-out copy accuracy on 128 sequences per seed (a different held-out set
 for each seed), reported as mean ± sample standard deviation over 8 seeds. The tables below
 are the unedited output of `benchmarks/research_study.py`; the raw per-run values are in
-[`research_results.json`](research_results.json). For reference, seed 0 of `2L-attn` scores
-0.897 here against 0.903 in the README, which evaluates on a smaller held-out set (64).
+[`research_results.json`](research_results.json). For reference, seed 0 of `2L-attn` scored
+0.897 here against 0.903 in the README at the time, which evaluates on a smaller held-out set (64).
 
 Seeds: 0, 1, 2, 3, 4, 5, 6, 7 (n = 8)
 
@@ -361,6 +361,34 @@ half of the symbols, mostly the early ones.
 - **Post-hoc analysis is exploratory.** The per-target tables and the refuted counting
   explanation were produced after seeing the main results and are not covered by the
   pre-registration.
+
+## Rerun on the numpy engine
+
+The study above ran on the original engine, which did its arithmetic in Python lists. The
+autodiff engine now runs on numpy; its gradients agree with the old engine to 6e-16 on the same
+weights and inputs. Over 300 training steps those last-bit differences grow, so individual runs
+end in different places, and the whole pre-registered study was rerun unchanged (same arms, seeds,
+budget and thresholds) to check whether the conclusions depend on them. They do not:
+
+| | Original engine | numpy engine |
+|---|---:|---:|
+| `2L-attn` copy accuracy | 0.976 ± 0.034 | 0.984 ± 0.041 |
+| `1L-attn` (matched steps) | 0.967 ± 0.090 | 0.980 ± 0.055 |
+| `1L-attn-wide` (matched parameters) | 0.976 ± 0.041 | 0.964 ± 0.061 |
+| `3L-attn` | 0.982 ± 0.022 | 0.964 ± 0.080 |
+| `2L-uniform` | 0.520 ± 0.026 | 0.520 ± 0.026 |
+| all of layer 1 ablated | 0.224 ± 0.039 | 0.212 ± 0.074 |
+| all of layer 2 ablated | 0.951 ± 0.034 | 0.946 ± 0.048 |
+| **H1** | MIXED (4/8 seeds) | **MIXED** (4/8 seeds) |
+| **H2** | NOT SUPPORTED | **NOT SUPPORTED** (+0.003 and +0.020) |
+| **H3** | MIXED | **MIXED** (gap to attention +0.463, bigram 0.250) |
+| wall time, 8 workers | 693 s | 40 s |
+
+The uniform mixer is identical to three decimals because it has no attention scores to round
+differently. Copying is again done by layer-1 heads at a fixed offset, and layer 2 matters little.
+Raw per-run values for the rerun are in
+[`research_results_numpy.json`](research_results_numpy.json); the tables in the Results section
+remain the original pre-registered run.
 
 ## What I would do next
 

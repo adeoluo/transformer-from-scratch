@@ -28,7 +28,8 @@ def _forward_to_layer(model: Transformer, token_ids: list[int], layer: int) -> l
     x = T.add(tok, pos)
     for block in model.blocks[:layer]:
         x = block.forward(x)
-    return [row[:] for row in model.blocks[layer].ln1.forward(x).data]
+    rows: list[list[float]] = model.blocks[layer].ln1.forward(x).data.tolist()
+    return rows
 
 
 def attention_pattern(
@@ -41,8 +42,8 @@ def attention_pattern(
         n = len(token_ids)
         return [[1.0 / (i + 1) if j <= i else 0.0 for j in range(n)] for i in range(n)]
     x = _forward_to_layer(model, token_ids, layer)
-    w_q = attn_head.w_q.data
-    w_k = attn_head.w_k.data
+    w_q = attn_head.w_q.data.tolist()
+    w_k = attn_head.w_k.data.tolist()
     d_head = attn_head.w_q.cols
     scale = 1.0 / math.sqrt(d_head)
 
