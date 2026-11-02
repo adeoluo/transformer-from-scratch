@@ -1,7 +1,7 @@
 [project]
 name = "transformer-from-scratch"
 version = "0.1.0"
-description = "A transformer language model and a reverse-mode autodiff engine built from scratch in pure Python, with no numerical libraries"
+description = "A transformer language model and a reverse-mode autodiff engine built from scratch in Python, with no numerical libraries"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -16,8 +16,8 @@ dev = [
     "pytest-cov>=5.0",
 ]
 # Optional, opt-in only: the independent PyTorch numerical-parity check in
-# tests/test_torch_parity.py. Not installed by default CI, so the core library
-# stays zero dependency. Run it with: uv sync --group validation && uv run pytest
+# tests/test_torch_parity.py. Not installed by default CI and not a runtime
+# dependency. Run it with: uv sync --group validation && uv run pytest
 validation = [
     "torch>=2.0",
 ]

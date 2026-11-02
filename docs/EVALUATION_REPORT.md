@@ -54,7 +54,7 @@ the default is set at the stable optimum.
 Greedy generation recomputes a full forward pass per new token (no key-value cache). Under a
 concurrent stress benchmark (`uv run python benchmarks/stress.py`, 2000 requests, 8 workers) the
 `/generate` handler sustains roughly 50 requests per second with p50 near 140 ms. This reflects
-pure-Python execution and the absence of a cache, and is reported rather than hidden.
+interpreted-Python execution and the absence of a cache, and is reported rather than hidden.
 
 ## Reproducibility
 

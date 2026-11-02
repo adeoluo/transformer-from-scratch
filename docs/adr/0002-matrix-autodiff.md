@@ -7,7 +7,7 @@
 The project needs reverse-mode automatic differentiation with no external library. The simplest
 teaching approach is scalar autograd, where every float is a node in the graph. That is elegant
 but far too slow for a transformer: a single attention matrix multiply would create thousands of
-scalar nodes, and training would take hours in pure Python.
+scalar nodes, and training would take hours in interpreted Python.
 
 ## Decision
 Build the engine at the granularity of dense 2-D tensors. Each operation (matmul, biased affine

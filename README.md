@@ -1,16 +1,14 @@
 <h1 align="center">Transformer From Scratch</h1>
 
 <p align="center">
-  <em>A reverse-mode automatic differentiation engine and a transformer language model, built from scratch in pure Python with no numerical libraries. Every gradient is verified against finite differences.</em>
+  <em>A reverse-mode automatic differentiation engine and a decoder-only transformer language model, built from scratch, with every gradient verified against finite differences.</em>
 </p>
 
 <p align="center">
-  <a href="https://github.com/adeoluo/transformer-from-scratch/actions/workflows/ci.yml"><img alt="Continuous integration" src="https://github.com/adeoluo/transformer-from-scratch/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Coverage" src="https://img.shields.io/badge/coverage-96%25-brightgreen">
+  <a href="https://github.com/adeoluo/transformer-from-scratch/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/adeoluo/transformer-from-scratch/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/adeoluo/transformer-from-scratch/releases"><img alt="Release" src="https://img.shields.io/github/v/release/adeoluo/transformer-from-scratch"></a>
   <img alt="Python" src="https://img.shields.io/badge/python-3.11%20%7C%203.12-blue">
-  <img alt="Type checked" src="https://img.shields.io/badge/mypy-strict-blue">
-  <img alt="Runtime dependencies" src="https://img.shields.io/badge/runtime%20deps-0-brightgreen">
-  <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
 
 ---
@@ -22,7 +20,7 @@ understanding: how gradients flow backward through attention, and how attention 
 use information from far away in the sequence. This project removes the framework. It builds a
 small **reverse-mode automatic differentiation engine** over plain lists of floats, writes out
 every backward pass by hand, and composes a **decoder-only transformer** entirely from those
-operations, with **zero runtime dependencies** and no automatic differentiation library.
+operations, with no automatic differentiation library.
 
 Correctness is not asserted, it is checked: every operation's analytic gradient is compared to
 a finite-difference estimate, and the whole network agrees to within `1e-4`. The model is then
@@ -32,7 +30,7 @@ exactly what attention buys.
 ## Architecture
 
 <p align="center">
-  <img src="docs/architecture/architecture.svg" alt="System architecture" width="900">
+  <img src="docs/architecture/architecture.svg" alt="Architecture diagram" width="860">
 </p>
 
 The engine records a local backward closure for each operation and runs them in reverse
@@ -41,7 +39,7 @@ multi-head causal self-attention and a GELU feed-forward network, with weight-ti
 output embeddings. Training uses an Adam optimizer written from scratch. See the
 [ADRs](docs/adr/) for the key decisions.
 
-## The autodiff engine
+### The autodiff engine
 
 Everything is built from one `Tensor` type and a minimal set of differentiable operations:
 matrix multiply, biased affine maps, residual addition, scaling, GELU, row-wise **causal
@@ -52,7 +50,7 @@ softmax **cross-entropy** loss. A single `loss.backward()` differentiates the en
 > norm) the analytic gradient matches a central finite-difference estimate to better than
 > `1e-4`; the worst observed difference is around `1e-10`.
 
-## The task: copying needs attention
+### The task: copying needs attention
 
 A sequence is a random string, a separator, then the same string again. Predicting the second
 copy requires looking back to the matching position in the first copy. An n-gram model cannot
@@ -116,8 +114,8 @@ state-of-the-art language model.
 The hand-written autodiff is validated two ways. `tests/test_autograd.py` checks analytic gradients
 against finite differences; `tests/test_torch_parity.py` reconstructs the exact forward pass in
 **PyTorch**, loads the same weights, and asserts the logits and cross-entropy match to **better than
-1e-9**. PyTorch is an opt-in `validation` dependency group, not a runtime dependency, so the core
-library stays zero-dependency and default CI does not require it. Run the parity check with:
+1e-9**. PyTorch is an opt-in `validation` dependency group, not a runtime dependency, and default CI does
+not require it. Run the parity check with:
 
 ```bash
 uv sync --group validation && uv run pytest tests/test_torch_parity.py
@@ -149,11 +147,11 @@ trained model is applied at every size. Run with `uv run python benchmarks/scale
 | 160 | 7.87 | 20.3 | 17.80 | 0.856 |
 | 320 | 15.99 | 20.0 | 16.88 | 0.859 |
 
-Honest caveat: the data is synthetic, the model is deliberately tiny, and this pure-Python
+Honest caveat: the data is synthetic, the model is deliberately tiny, and this Python
 implementation is not benchmarked against compiled tensor libraries; the first row carries
 warmup overhead, so treat it as a lower bound.
 
-## Research study: what makes copying work?
+### Research study: what makes copying work?
 
 [`docs/RESEARCH.md`](docs/RESEARCH.md) is a pre-registered causal study of *how* the model
 copies and what architecture it needs. Three hypotheses and numeric decision thresholds were
@@ -175,15 +173,11 @@ absolute position embeddings make that positional shortcut available, which is w
 not help. The write-up covers threats to validity and the follow-up that would actually test
 induction (randomly offset repeats).
 
-## Demonstration
+### Evaluation method
 
-```text
-$ python -m transformer_from_scratch train
-Trained 300 steps on the copy task (symbols=4, length=5).
-  transformer: copy_acc=0.9031, overall_acc=0.6234, ppl=2.285
-  bigram:      copy_acc=0.2344
-  sharpest attention head: layer 0 head 1, peak 0.981
-```
+Train and test splits are generated with seeded randomness and are disjoint by construction.
+All runs are deterministic given a seed. Full method and tables:
+[`docs/EVALUATION_REPORT.md`](docs/EVALUATION_REPORT.md).
 
 ## Quickstart
 
@@ -199,7 +193,19 @@ python -m transformer_from_scratch attention    # print the sharpest head's atte
 python -m transformer_from_scratch serve        # start the HTTP service on :8000
 ```
 
-## HTTP service
+## Usage
+
+### Demonstration
+
+```text
+$ python -m transformer_from_scratch train
+Trained 300 steps on the copy task (symbols=4, length=5).
+  transformer: copy_acc=0.9031, overall_acc=0.6234, ppl=2.285
+  bigram:      copy_acc=0.2344
+  sharpest attention head: layer 0 head 1, peak 0.981
+```
+
+### HTTP service
 
 A standard-library HTTP service trains once at startup, then answers generation, evaluation, and
 attention-inspection requests. The routing logic is a pure function, tested without a socket.
@@ -227,11 +233,26 @@ curl -s localhost:8000/attention -d '{"tokens": [1,2,3,4,0,1], "layer": 0, "head
   isolates the contribution of attention and keeps every number reproducible in seconds. See
   [ADR 0003](docs/adr/0003-copy-task.md).
 
-## Evaluation
+## Testing
 
-Train and test splits are generated with seeded randomness and are disjoint by construction.
-All runs are deterministic given a seed. Full method and tables:
-[`docs/EVALUATION_REPORT.md`](docs/EVALUATION_REPORT.md).
+```bash
+make lint        # ruff format --check and ruff check
+make type        # mypy src (strict)
+make test        # pytest (all tests, including the slow end-to-end check)
+make coverage    # pytest with an 80% coverage gate
+uv sync --group validation && uv run pytest tests/test_torch_parity.py   # opt-in PyTorch parity
+```
+
+The suite in `tests/` has 54 tests:
+
+- `test_autograd.py`: analytic gradients against central finite differences for every parameter type, gradient accumulation into the weight-tied embedding, and random restarts.
+- `test_model.py`: tensor operations (matmul, causal softmax, layer norm), model shapes and configuration validation, disjoint data splits, training learning to copy above the bigram baseline, determinism, and attention sharpening with training.
+- `test_text.py`: the character vocabulary, the bundled prose corpus, the unigram baseline, character-level training, bits per character, and checkpoint round trips.
+- `test_research.py`: head ablation, the uniform mean-pooling mixer, parameter matching, the hypothesis verdict rules, study determinism, and an end-to-end research run (marked `slow`).
+- `test_service_cli.py`: HTTP routes through the pure routing function (no socket), input validation, metrics, and the CLI.
+- `test_torch_parity.py`: logits and cross-entropy against a PyTorch reference; skipped unless the `validation` group is installed.
+
+CI (`.github/workflows/ci.yml`) runs format, lint, type check, and the coverage-gated tests with `-m "not slow"` on Python 3.11 and 3.12, then builds the package and the Docker image. CodeQL runs in `codeql.yml`.
 
 ## Responsible AI
 
@@ -243,7 +264,7 @@ All runs are deterministic given a seed. Full method and tables:
 
 - The model is tiny and trained on a synthetic copy task; it demonstrates mechanisms (backprop
   through attention, attention-based copying), not language modeling at scale.
-- Pure-Python execution is slow. Greedy generation recomputes a full forward pass per token
+- Execution in interpreted Python is slow. Greedy generation recomputes a full forward pass per token
   (no key-value cache), so the service sustains tens of requests per second, not thousands.
 - The copy is not implemented by a textbook induction head: the research study shows it is a
   positional lookup by one or two layer-1 heads, which the fixed-length task allows.
@@ -254,10 +275,10 @@ All runs are deterministic given a seed. Full method and tables:
 - [x] Validate the forward pass against PyTorch to a tight numerical tolerance.
 - [x] Add model checkpointing (save, load, resume).
 - [ ] Add a key-value cache so generation is linear rather than quadratic per token.
-- [ ] GPU acceleration: this pure-Python engine is CPU-only and trains small models in minutes;
+- [ ] GPU acceleration: this engine is CPU-only and trains small models in minutes;
       a vectorized or compiled backend would be required for larger corpora and real throughput.
 - [ ] Train on a larger corpus with a word or subword tokenizer and report validation perplexity.
 
 ## License
 
-[MIT](LICENSE)
+Released under the [MIT License](LICENSE).

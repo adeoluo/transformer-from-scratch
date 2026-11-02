@@ -13,7 +13,7 @@
 
 ## Out-of-scope / prohibited use
 - Not a language model for real text; the vocabulary and task are synthetic.
-- Not a performance reference; pure-Python execution is slow by design.
+- Not a performance reference; execution in interpreted Python is slow by design.
 - The accuracy numbers describe a copy task and must not be cited as a language benchmark.
 
 ## Performance
