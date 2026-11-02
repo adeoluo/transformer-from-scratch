@@ -12,6 +12,7 @@ A reverse-mode automatic differentiation engine and a decoder-only transformer l
 - `benchmarks/`: benchmark scripts and recorded results
 - `docker-compose.yml`: local container setup
 - `docs/`: documentation, architecture diagram source and render, design records
+- `scripts/`: maintenance scripts (release, assets, data)
 - `src/`: library and service source
 - `tests/`: test suite
 

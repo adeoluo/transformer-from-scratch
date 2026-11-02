@@ -74,12 +74,12 @@ def test_ablated_head_outputs_zeros_and_flag_is_restored(small_cfg: ModelConfig)
 def test_ablation_changes_logits_and_restores_on_error(small_cfg: ModelConfig) -> None:
     model = Transformer(small_cfg, seed=0)
     ids = [1, 2, 3, 0, 1]
-    intact = model.logits(ids).data
+    intact = model.logits(ids).data.tolist()
     with ablate_heads(model, [(1, 0)]):
-        assert model.logits(ids).data != intact
+        assert model.logits(ids).data.tolist() != intact
     with pytest.raises(RuntimeError), ablate_heads(model, [(1, 0)]):
         raise RuntimeError("boom")
-    assert model.logits(ids).data == intact
+    assert model.logits(ids).data.tolist() == intact
 
 
 def test_ablating_every_head_removes_cross_position_information(
@@ -87,10 +87,10 @@ def test_ablating_every_head_removes_cross_position_information(
 ) -> None:
     model = Transformer(small_cfg, seed=0)
     a, b = [1, 2, 3], [4, 2, 3]
-    assert model.logits(a).data[2] != model.logits(b).data[2]
+    assert model.logits(a).data[2].tolist() != model.logits(b).data[2].tolist()
     every = [(layer, h) for layer in range(small_cfg.n_layer) for h in range(small_cfg.n_head)]
     with ablate_heads(model, every):
-        assert model.logits(a).data[2] == model.logits(b).data[2]
+        assert model.logits(a).data[2].tolist() == model.logits(b).data[2].tolist()
 
 
 def test_uniform_head_is_causal_mean_of_values(small_cfg: ModelConfig) -> None:
@@ -128,7 +128,7 @@ def test_default_model_is_unchanged_by_the_mixer_option(small_cfg: ModelConfig) 
     attn = Transformer(small_cfg, seed=3)
     uniform = Transformer(replace(small_cfg, mixer="uniform"), seed=3)
     for p, q in zip(attn.parameters(), uniform.parameters(), strict=True):
-        assert p.data == q.data
+        assert p.data.tolist() == q.data.tolist()
 
 
 def test_unknown_mixer_is_rejected() -> None:

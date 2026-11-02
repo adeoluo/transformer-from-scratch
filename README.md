@@ -18,8 +18,8 @@
 A transformer is usually a few lines on top of a framework that hides the two things worth
 understanding: how gradients flow backward through attention, and how attention lets a model
 use information from far away in the sequence. This project removes the framework. It builds a
-small **reverse-mode automatic differentiation engine** over plain lists of floats, writes out
-every backward pass by hand, and composes a **decoder-only transformer** entirely from those
+small **reverse-mode automatic differentiation engine** over numpy arrays, writes out every
+backward pass by hand, and composes a **decoder-only transformer** entirely from those
 operations, with no automatic differentiation library.
 
 Correctness is not asserted, it is checked: every operation's analytic gradient is compared to
@@ -52,6 +52,9 @@ Everything is built from one `Tensor` type and a minimal set of differentiable o
 matrix multiply, biased affine maps, residual addition, scaling, GELU, row-wise **causal
 softmax**, row-wise **layer normalization**, embedding lookup, column concatenation, and a
 softmax **cross-entropy** loss. A single `loss.backward()` differentiates the entire network.
+Each operation's forward and backward pass is written out by hand and runs as numpy array
+arithmetic; the engine first did the same arithmetic in Python lists, and the numpy version
+reproduces its gradients to within 6e-16 while training 14 to 24 times faster.
 
 > **Gradients verified.** For every parameter type (embeddings, attention, feed-forward, layer
 > norm) the analytic gradient matches a central finite-difference estimate to better than
@@ -66,26 +69,30 @@ do this because the token to emit depends on one many positions earlier, not on 
 ## Results
 
 > Reproduce with `python -m transformer_from_scratch train`. Default model: `d_model` 24,
-> 3 heads, 2 layers; trained 300 steps on CPU in under a minute. Held-out split is disjoint
+> 3 heads, 2 layers; trained 300 steps on CPU in about 4 seconds. Held-out split is disjoint
 > from training.
 
 | Metric | Transformer | Bigram baseline |
 |---|---:|---:|
-| **held-out copy accuracy** | **0.903** | 0.234 |
-| overall next-token accuracy | 0.623 | 0.209 |
-| perplexity | 2.285 | - |
+| **held-out copy accuracy** | **0.872** | 0.234 |
+| overall next-token accuracy | 0.622 | 0.209 |
+| perplexity | 2.460 | - |
 
-The from-scratch transformer reaches **0.903 copy accuracy versus 0.234** for a bigram model
+The from-scratch transformer reaches **0.872 copy accuracy versus 0.234** for a bigram model
 estimated on the same data, a near-4x gap that exists entirely because attention can copy and
 an n-gram model cannot. Overall accuracy is capped because the first half of each sequence is
-random and unpredictable by construction.
+random and unpredictable by construction. This is one seed; the
+[research study](docs/RESEARCH.md) trains each architecture on 8 seeds, where the same model
+averages 0.984 ± 0.041 on a larger held-out set. (Under the earlier list-based engine this seed
+scored 0.903: the two engines agree to the last bits, but 300 steps of training amplify those
+differences, which is ordinary seed-to-seed variation.)
 
 ### Attention becomes confident as it learns
 
 | Attention statistic (sharpest head) | Untrained | Trained |
 |---|---:|---:|
-| mean peak weight over the copy region | 0.425 | **0.981** |
-| mean attention entropy | 1.84 | **0.00** |
+| mean peak weight over the copy region | 0.425 | **0.994** |
+| mean attention entropy | 1.55 | **0.02** |
 
 At initialization a head spreads its weight almost uniformly (high entropy); after training the
 sharpest head places essentially all of its weight on a few source positions (entropy collapses
@@ -112,8 +119,9 @@ held-out compression in **bits per character** against a unigram baseline.
 The model compresses held-out text to **3.639 bits per character, 0.663 bits better than a unigram
 model** fit on the same data, so it has learned real conditional structure in English rather than
 only a synthetic pattern. A sampled continuation from the prompt `"It is "` produces word-like
-fragments with plausible letter statistics. The model is deliberately tiny and trained on CPU in a
-few minutes, so this measures that the architecture and optimizer learn language, not a
+fragments with plausible letter statistics. The model is deliberately tiny and trains on CPU in
+about 10 seconds (236 seconds on the list-based engine, with identical results), so this
+measures that the architecture and optimizer learn language, not a
 state-of-the-art language model.
 
 ### Independent validation: PyTorch numerical parity
@@ -143,20 +151,21 @@ restored = Transformer.load("model.json")  # restored.logits(x) == model.logits(
 `benchmarks/scale.py` trains one small model, then runs the from-scratch forward pass
 (`model.logits`) over progressively larger batches of held-out sequences and records
 wall-clock time, inference throughput, peak memory (`tracemalloc`), and held-out copy
-accuracy. Throughput is roughly flat near 20 sequences per second, confirming linear
+accuracy. Throughput is roughly flat near 700 sequences per second, confirming linear
 scaling in the number of sequences, while copy accuracy stays stable because the same
 trained model is applied at every size. Run with `uv run python benchmarks/scale.py`.
 
 | Sequences | Seconds | Throughput (seq/sec) | Peak memory (MiB) | Copy accuracy |
 |---:|---:|---:|---:|---:|
-| 40 | 3.85 | 10.4 | 9.99 | 0.855 |
-| 80 | 3.60 | 22.2 | 12.22 | 0.843 |
-| 160 | 7.87 | 20.3 | 17.80 | 0.856 |
-| 320 | 15.99 | 20.0 | 16.88 | 0.859 |
+| 40 | 0.055 | 724.6 | 3.84 | 0.855 |
+| 80 | 0.106 | 758.0 | 6.53 | 0.843 |
+| 160 | 0.249 | 643.8 | 6.64 | 0.856 |
+| 320 | 0.452 | 707.7 | 9.05 | 0.859 |
 
-Honest caveat: the data is synthetic, the model is deliberately tiny, and this Python
-implementation is not benchmarked against compiled tensor libraries; the first row carries
-warmup overhead, so treat it as a lower bound.
+On the list-based engine the same runs managed about 20 sequences per second with up to 17.8 MiB
+peak; numpy brings that to about 700 (35x) with less memory and identical accuracy. The data is
+synthetic, the model is deliberately tiny, and it is not compared against compiled tensor
+libraries, which batch sequences and would be far faster.
 
 ### Research study: what makes copying work?
 
@@ -207,9 +216,9 @@ python -m transformer_from_scratch serve        # start the HTTP service on :800
 ```text
 $ python -m transformer_from_scratch train
 Trained 300 steps on the copy task (symbols=4, length=5).
-  transformer: copy_acc=0.9031, overall_acc=0.6234, ppl=2.285
+  transformer: copy_acc=0.8719, overall_acc=0.6219, ppl=2.460
   bigram:      copy_acc=0.2344
-  sharpest attention head: layer 0 head 1, peak 0.981
+  sharpest attention head: layer 0 head 0, peak 0.994
 ```
 
 ### HTTP service
@@ -293,8 +302,9 @@ CI (`.github/workflows/ci.yml`) runs format, lint, type check, and the coverage-
 
 - The model is tiny and trained on a synthetic copy task; it demonstrates mechanisms (backprop
   through attention, attention-based copying), not language modeling at scale.
-- Execution in interpreted Python is slow. Greedy generation recomputes a full forward pass per token
-  (no key-value cache), so the service sustains tens of requests per second, not thousands.
+- Greedy generation recomputes a full forward pass per token (no key-value cache) and runs one
+  sequence at a time, so the service sustains hundreds of requests per second (459 under the
+  stress benchmark), not tens of thousands.
 - The copy is not implemented by a textbook induction head: the research study shows it is a
   positional lookup by one or two layer-1 heads, which the fixed-length task allows.
 
