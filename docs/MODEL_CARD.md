@@ -24,7 +24,8 @@
 ## Limitations and failure modes
 - Tiny model and synthetic task; no claims about scale or natural language.
 - No key-value cache, so generation cost is quadratic in sequence length.
-- The copy mechanism is distributed across heads rather than a single clean induction head.
+- The copy mechanism is a positional lookup by one or two layer-1 heads, not an induction
+  circuit; see [`RESEARCH.md`](RESEARCH.md).
 
 ## Ethical considerations
 - No personal data, no network access, no external model. The task is synthetic symbols.

@@ -153,6 +153,28 @@ Honest caveat: the data is synthetic, the model is deliberately tiny, and this p
 implementation is not benchmarked against compiled tensor libraries; the first row carries
 warmup overhead, so treat it as a lower bound.
 
+## Research study: what makes copying work?
+
+[`docs/RESEARCH.md`](docs/RESEARCH.md) is a pre-registered causal study of *how* the model
+copies and what architecture it needs. Three hypotheses and numeric decision thresholds were
+committed before any run; then 5 architectures were trained for 8 seeds each at the same step
+budget (40 runs), every attention head of the 2-layer models was ablated, and the critical
+heads' attention patterns were probed. Reproduce with `uv run python benchmarks/research_study.py`.
+
+| Hypothesis | Verdict | Result (mean ± std over 8 seeds) |
+|---|---|---|
+| H1: ablating the single sharpest head drops copying to near baseline; other heads matter little | **MIXED** | holds in 4 of 8 seeds; in others copying is split across two heads, or the sharpest head is not the important one |
+| H2: a 1-layer model cannot match 2 layers at matched steps or parameters | **NOT SUPPORTED** | 1 layer 0.967 ± 0.090 (matched steps) and 0.976 ± 0.041 (matched parameters) vs 2 layers 0.976 ± 0.034 |
+| H3: a uniform mean-pooling mixer fails the task | **MIXED** | 0.520 ± 0.026: far below attention, but well above the bigram baseline (0.250 ± 0.012) |
+
+The main finding is negative: **this model does not learn an induction circuit.** Copying is
+done by one or two layer-1 heads that attend to a fixed offset (`length` positions back), with
+near-zero attention on look-alike positions; ablating all of layer 1 drops accuracy to
+0.224 ± 0.039, while ablating all of layer 2 costs only 0.025. Fixed-length sequences with
+absolute position embeddings make that positional shortcut available, which is why depth does
+not help. The write-up covers threats to validity and the follow-up that would actually test
+induction (randomly offset repeats).
+
 ## Demonstration
 
 ```text
@@ -220,11 +242,11 @@ All runs are deterministic given a seed. Full method and tables:
 ## Limitations
 
 - The model is tiny and trained on a synthetic copy task; it demonstrates mechanisms (backprop
-  through attention, induction-style copying), not language modeling at scale.
+  through attention, attention-based copying), not language modeling at scale.
 - Pure-Python execution is slow. Greedy generation recomputes a full forward pass per token
   (no key-value cache), so the service sustains tens of requests per second, not thousands.
-- The copy is implemented through multi-head composition rather than a single textbook
-  induction head; the attention-sharpness readout reflects that honestly.
+- The copy is not implemented by a textbook induction head: the research study shows it is a
+  positional lookup by one or two layer-1 heads, which the fixed-length task allows.
 
 ## Roadmap
 

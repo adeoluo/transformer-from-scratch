@@ -20,6 +20,8 @@ from typing import Any
 from transformer_from_scratch import tensor as T
 from transformer_from_scratch.tensor import Tensor
 
+MIXERS = ("attention", "uniform")
+
 
 @dataclass(frozen=True)
 class ModelConfig:
@@ -31,10 +33,13 @@ class ModelConfig:
     n_head: int = 3
     n_layer: int = 2
     d_ff: int = 48
+    mixer: str = "attention"
 
     def __post_init__(self) -> None:
         if self.d_model % self.n_head != 0:
             raise ValueError("d_model must be divisible by n_head")
+        if self.mixer not in MIXERS:
+            raise ValueError(f"mixer must be one of {MIXERS}, got {self.mixer!r}")
 
     @property
     def d_head(self) -> int:
@@ -45,23 +50,47 @@ def _rand_matrix(rows: int, cols: int, scale: float, rng: random.Random) -> list
     return [[rng.gauss(0.0, scale) for _ in range(cols)] for _ in range(rows)]
 
 
-class AttentionHead:
-    """One causal self-attention head with its own query, key, and value maps."""
+def uniform_causal_weights(t: int) -> Tensor:
+    """Return the fixed ``(t, t)`` causal mean-pooling matrix (row ``i`` is ``1/(i+1)``)."""
 
-    def __init__(self, d_model: int, d_head: int, rng: random.Random) -> None:
+    data = [[1.0 / (i + 1) if j <= i else 0.0 for j in range(t)] for i in range(t)]
+    return Tensor(data, requires_grad=False)
+
+
+class AttentionHead:
+    """One causal self-attention head with its own query, key, and value maps.
+
+    With ``uniform=True`` the learned softmax(QK) weights are replaced by a fixed
+    causal mean over all previous positions, a content-independent mixer used as
+    a matched-budget control in the research study. The query and key matrices
+    are still created (so the random stream and parameter layout match the
+    attention model) but receive no gradient. Setting ``ablated`` makes the head
+    output zeros, which is how the study measures a head's causal contribution.
+    """
+
+    def __init__(
+        self, d_model: int, d_head: int, rng: random.Random, *, uniform: bool = False
+    ) -> None:
         s = 1.0 / math.sqrt(d_model)
         self.w_q = Tensor(_rand_matrix(d_model, d_head, s, rng))
         self.w_k = Tensor(_rand_matrix(d_model, d_head, s, rng))
         self.w_v = Tensor(_rand_matrix(d_model, d_head, s, rng))
         self.scale = 1.0 / math.sqrt(d_head)
+        self.d_head = d_head
+        self.uniform = uniform
+        self.ablated = False
 
     def parameters(self) -> list[Tensor]:
         return [self.w_q, self.w_k, self.w_v]
 
     def forward(self, x: Tensor) -> Tensor:
+        if self.ablated:
+            return Tensor([[0.0] * self.d_head for _ in range(x.rows)], requires_grad=False)
+        v = T.matmul(x, self.w_v)
+        if self.uniform:
+            return T.matmul(uniform_causal_weights(x.rows), v)
         q = T.matmul(x, self.w_q)
         k = T.matmul(x, self.w_k)
-        v = T.matmul(x, self.w_v)
         scores = T.scale(T.matmul(q, T.transpose(k)), self.scale)
         weights = T.causal_softmax(scores)
         return T.matmul(weights, v)
@@ -71,7 +100,10 @@ class MultiHeadAttention:
     """Several attention heads concatenated and projected back to ``d_model``."""
 
     def __init__(self, cfg: ModelConfig, rng: random.Random) -> None:
-        self.heads = [AttentionHead(cfg.d_model, cfg.d_head, rng) for _ in range(cfg.n_head)]
+        uniform = cfg.mixer == "uniform"
+        self.heads = [
+            AttentionHead(cfg.d_model, cfg.d_head, rng, uniform=uniform) for _ in range(cfg.n_head)
+        ]
         s = 1.0 / math.sqrt(cfg.d_model)
         self.w_o = Tensor(_rand_matrix(cfg.d_model, cfg.d_model, s, rng))
         self.b_o = Tensor([[0.0] * cfg.d_model])

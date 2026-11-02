@@ -65,7 +65,7 @@ is in the quality of the evidence, not the size of the model.
 
 ## What this demonstrates
 
-The ability to implement a non-trivial system from first principles and, crucially,
+The ability to implement a non-trivial system from scratch and, crucially,
 to prove it works: analytic gradients checked against finite differences and an
 independent framework, learning demonstrated on both a controlled synthetic task
 and real text, and every claim backed by a reproducible, deterministic experiment.

@@ -1,0 +1,1459 @@
+{
+  "config": {
+    "n_symbols": 4,
+    "length": 5,
+    "d_model": 24,
+    "n_head": 3,
+    "d_ff": 48,
+    "steps": 300,
+    "batch_size": 16,
+    "learning_rate": 0.02,
+    "n_test": 128,
+    "n_probe": 32,
+    "include_three_layer": true
+  },
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "runs": [
+    {
+      "variant": "2L-attn",
+      "seed": 0,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 0.896875,
+      "overall_accuracy": 0.634375,
+      "perplexity": 2.2286034717658323,
+      "bigram_copy_accuracy": 0.25625,
+      "final_loss": 0.5678065464625067,
+      "seconds": 122.51384479203261,
+      "ablation": {
+        "intact": 0.896875,
+        "per_head": [
+          [
+            0.3296875,
+            0.84375,
+            0.7859375
+          ],
+          [
+            0.884375,
+            0.890625,
+            0.8953125
+          ]
+        ],
+        "per_layer": [
+          0.215625,
+          0.8890625
+        ],
+        "all_heads": 0.225
+      },
+      "sharpest": [
+        0,
+        0
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 0.7492625917413583,
+          "source_argmax_rate": 0.75,
+          "previous_token_mass": 6.131449123237099e-05,
+          "ambiguous_source_mass": 0.7772431702746045,
+          "ambiguous_distractor_mass": 0.12226484836328802,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.04697331395502846,
+          "source_argmax_rate": 0.046875,
+          "previous_token_mass": 0.005780971364092967,
+          "ambiguous_source_mass": 0.06659925641256106,
+          "ambiguous_distractor_mass": 0.34341776739862495,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 1.246137442230731e-08,
+          "source_argmax_rate": 0.0,
+          "previous_token_mass": 0.24767066189639889,
+          "ambiguous_source_mass": 1.7652145058614622e-08,
+          "ambiguous_distractor_mass": 0.44568321975056185,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.15399626774053662,
+          "source_argmax_rate": 0.1484375,
+          "previous_token_mass": 0.06456462710163105,
+          "ambiguous_source_mass": 0.15801333519186658,
+          "ambiguous_distractor_mass": 0.3374993040093402,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.14464527893616919,
+          "source_argmax_rate": 0.15625,
+          "previous_token_mass": 0.09875874464026849,
+          "ambiguous_source_mass": 0.15037258310882828,
+          "ambiguous_distractor_mass": 0.26844960530101186,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.1980175760413272,
+          "source_argmax_rate": 0.21875,
+          "previous_token_mass": 0.1175716724451366,
+          "ambiguous_source_mass": 0.2068059328411523,
+          "ambiguous_distractor_mass": 0.17430476659004185,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        }
+      ]
+    },
+    {
+      "variant": "2L-attn",
+      "seed": 1,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 0.99375,
+      "overall_accuracy": 0.68515625,
+      "perplexity": 1.9184852861869617,
+      "bigram_copy_accuracy": 0.2421875,
+      "final_loss": 0.5207619631062742,
+      "seconds": 125.0829352089786,
+      "ablation": {
+        "intact": 0.99375,
+        "per_head": [
+          [
+            0.95625,
+            0.89375,
+            0.2515625
+          ],
+          [
+            0.99375,
+            0.9546875,
+            0.9984375
+          ]
+        ],
+        "per_layer": [
+          0.2734375,
+          0.9296875
+        ],
+        "all_heads": 0.2125
+      },
+      "sharpest": [
+        0,
+        2
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 0.00010071237518607641,
+          "source_argmax_rate": 0.0,
+          "previous_token_mass": 0.00019197618513571595,
+          "ambiguous_source_mass": 2.6460903849469608e-05,
+          "ambiguous_distractor_mass": 0.2221948438521397,
+          "n_queries": 128,
+          "n_ambiguous": 93
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.234797088756868,
+          "source_argmax_rate": 0.234375,
+          "previous_token_mass": 0.012729916098373536,
+          "ambiguous_source_mass": 0.25577353341402415,
+          "ambiguous_distractor_mass": 0.21968431844899164,
+          "n_queries": 128,
+          "n_ambiguous": 93
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 0.9949072691922166,
+          "source_argmax_rate": 1.0,
+          "previous_token_mass": 1.593795944310325e-08,
+          "ambiguous_source_mass": 0.9935274984718595,
+          "ambiguous_distractor_mass": 0.0009288377692086128,
+          "n_queries": 128,
+          "n_ambiguous": 93
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.19822020882312494,
+          "source_argmax_rate": 0.1953125,
+          "previous_token_mass": 0.0535035706792168,
+          "ambiguous_source_mass": 0.1860034036379454,
+          "ambiguous_distractor_mass": 0.2534561163280254,
+          "n_queries": 128,
+          "n_ambiguous": 93
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.2400828148571115,
+          "source_argmax_rate": 0.2421875,
+          "previous_token_mass": 0.004444453958758647,
+          "ambiguous_source_mass": 0.24441508408086363,
+          "ambiguous_distractor_mass": 0.3083547044832383,
+          "n_queries": 128,
+          "n_ambiguous": 93
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.18412359462369388,
+          "source_argmax_rate": 0.1875,
+          "previous_token_mass": 0.0817534579318206,
+          "ambiguous_source_mass": 0.15627553713297931,
+          "ambiguous_distractor_mass": 0.2550465278892419,
+          "n_queries": 128,
+          "n_ambiguous": 93
+        }
+      ]
+    },
+    {
+      "variant": "2L-attn",
+      "seed": 2,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 0.978125,
+      "overall_accuracy": 0.68046875,
+      "perplexity": 2.187325452103068,
+      "bigram_copy_accuracy": 0.2296875,
+      "final_loss": 0.5014456825052231,
+      "seconds": 124.11527479195502,
+      "ablation": {
+        "intact": 0.978125,
+        "per_head": [
+          [
+            0.9875,
+            0.9515625,
+            0.284375
+          ],
+          [
+            0.9953125,
+            0.984375,
+            0.9828125
+          ]
+        ],
+        "per_layer": [
+          0.225,
+          0.9546875
+        ],
+        "all_heads": 0.2546875
+      },
+      "sharpest": [
+        0,
+        2
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 0.14785917993342923,
+          "source_argmax_rate": 0.15625,
+          "previous_token_mass": 0.041192968963571684,
+          "ambiguous_source_mass": 0.16091962439482763,
+          "ambiguous_distractor_mass": 0.24493601680334845,
+          "n_queries": 128,
+          "n_ambiguous": 83
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.20162216747278866,
+          "source_argmax_rate": 0.203125,
+          "previous_token_mass": 0.15688863942152603,
+          "ambiguous_source_mass": 0.16818297351255623,
+          "ambiguous_distractor_mass": 0.1416312335792424,
+          "n_queries": 128,
+          "n_ambiguous": 83
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 0.9702811562960703,
+          "source_argmax_rate": 0.984375,
+          "previous_token_mass": 1.888272489194921e-11,
+          "ambiguous_source_mass": 0.9596077271024244,
+          "ambiguous_distractor_mass": 0.02290892465782943,
+          "n_queries": 128,
+          "n_ambiguous": 83
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.14858647793624796,
+          "source_argmax_rate": 0.1640625,
+          "previous_token_mass": 0.09331566376703626,
+          "ambiguous_source_mass": 0.12237882758241533,
+          "ambiguous_distractor_mass": 0.23776585711265508,
+          "n_queries": 128,
+          "n_ambiguous": 83
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.06781298578433977,
+          "source_argmax_rate": 0.0546875,
+          "previous_token_mass": 0.2173838373144979,
+          "ambiguous_source_mass": 0.07923307906260263,
+          "ambiguous_distractor_mass": 0.2888755646881376,
+          "n_queries": 128,
+          "n_ambiguous": 83
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.23750919920147687,
+          "source_argmax_rate": 0.2265625,
+          "previous_token_mass": 0.04945499469296192,
+          "ambiguous_source_mass": 0.19703684306908456,
+          "ambiguous_distractor_mass": 0.23062835691578698,
+          "n_queries": 128,
+          "n_ambiguous": 83
+        }
+      ]
+    },
+    {
+      "variant": "2L-attn",
+      "seed": 3,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.71328125,
+      "perplexity": 1.9028617118259763,
+      "bigram_copy_accuracy": 0.2625,
+      "final_loss": 0.5681103786071422,
+      "seconds": 124.89865870797075,
+      "ablation": {
+        "intact": 1.0,
+        "per_head": [
+          [
+            1.0,
+            0.4859375,
+            0.9265625
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "per_layer": [
+          0.26875,
+          1.0
+        ],
+        "all_heads": 0.2578125
+      },
+      "sharpest": [
+        0,
+        2
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 0.8855789039125114,
+          "source_argmax_rate": 0.890625,
+          "previous_token_mass": 0.009459535420852152,
+          "ambiguous_source_mass": 0.8615456154509535,
+          "ambiguous_distractor_mass": 0.01235626055643594,
+          "n_queries": 128,
+          "n_ambiguous": 91
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.9990559335588709,
+          "source_argmax_rate": 1.0,
+          "previous_token_mass": 2.2832313980068794e-06,
+          "ambiguous_source_mass": 0.998848313127245,
+          "ambiguous_distractor_mass": 0.0008792537506098269,
+          "n_queries": 128,
+          "n_ambiguous": 91
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 0.00053705117868053,
+          "source_argmax_rate": 0.0,
+          "previous_token_mass": 0.24946119478447826,
+          "ambiguous_source_mass": 0.0007540357045391395,
+          "ambiguous_distractor_mass": 0.3626540173156101,
+          "n_queries": 128,
+          "n_ambiguous": 91
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.17560798726663698,
+          "source_argmax_rate": 0.21875,
+          "previous_token_mass": 0.02957269186419884,
+          "ambiguous_source_mass": 0.13935844685889887,
+          "ambiguous_distractor_mass": 0.2436605763634159,
+          "n_queries": 128,
+          "n_ambiguous": 91
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.10495987532289681,
+          "source_argmax_rate": 0.109375,
+          "previous_token_mass": 0.11346388653186636,
+          "ambiguous_source_mass": 0.11150400210855646,
+          "ambiguous_distractor_mass": 0.28038012053168954,
+          "n_queries": 128,
+          "n_ambiguous": 91
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.13327165436915656,
+          "source_argmax_rate": 0.171875,
+          "previous_token_mass": 0.06692466535891438,
+          "ambiguous_source_mass": 0.15791767164323114,
+          "ambiguous_distractor_mass": 0.22756973143731551,
+          "n_queries": 128,
+          "n_ambiguous": 91
+        }
+      ]
+    },
+    {
+      "variant": "2L-attn",
+      "seed": 4,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 0.9953125,
+      "overall_accuracy": 0.69765625,
+      "perplexity": 1.987907983263226,
+      "bigram_copy_accuracy": 0.24375,
+      "final_loss": 0.4823140887573325,
+      "seconds": 124.34858229197562,
+      "ablation": {
+        "intact": 0.9953125,
+        "per_head": [
+          [
+            0.990625,
+            0.728125,
+            0.9609375
+          ],
+          [
+            0.9953125,
+            0.9953125,
+            0.9953125
+          ]
+        ],
+        "per_layer": [
+          0.171875,
+          0.9328125
+        ],
+        "all_heads": 0.1828125
+      },
+      "sharpest": [
+        0,
+        1
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 0.11696179426824499,
+          "source_argmax_rate": 0.109375,
+          "previous_token_mass": 0.24923125293048248,
+          "ambiguous_source_mass": 0.13217829083677224,
+          "ambiguous_distractor_mass": 0.10811125078074052,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.9950797498121638,
+          "source_argmax_rate": 1.0,
+          "previous_token_mass": 4.341472586440835e-09,
+          "ambiguous_source_mass": 0.9926429750955892,
+          "ambiguous_distractor_mass": 0.004226122833973856,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 0.896570164094437,
+          "source_argmax_rate": 0.890625,
+          "previous_token_mass": 1.4317843979152033e-06,
+          "ambiguous_source_mass": 0.8843574466741401,
+          "ambiguous_distractor_mass": 0.030647888678004113,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.13201441977336262,
+          "source_argmax_rate": 0.1328125,
+          "previous_token_mass": 0.14863702922198177,
+          "ambiguous_source_mass": 0.13419852137212437,
+          "ambiguous_distractor_mass": 0.24940600286660947,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.23056238959419603,
+          "source_argmax_rate": 0.25,
+          "previous_token_mass": 0.033589907541143944,
+          "ambiguous_source_mass": 0.19299489884747204,
+          "ambiguous_distractor_mass": 0.19401527669434415,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.18320045692506273,
+          "source_argmax_rate": 0.1796875,
+          "previous_token_mass": 0.1173329499019936,
+          "ambiguous_source_mass": 0.1582055020862056,
+          "ambiguous_distractor_mass": 0.24212551806052837,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        }
+      ]
+    },
+    {
+      "variant": "2L-attn",
+      "seed": 5,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 0.9890625,
+      "overall_accuracy": 0.7015625,
+      "perplexity": 2.020190820290495,
+      "bigram_copy_accuracy": 0.2484375,
+      "final_loss": 0.5035202445697644,
+      "seconds": 123.19407233298989,
+      "ablation": {
+        "intact": 0.9890625,
+        "per_head": [
+          [
+            0.9953125,
+            0.2203125,
+            0.978125
+          ],
+          [
+            0.95,
+            0.9890625,
+            0.9890625
+          ]
+        ],
+        "per_layer": [
+          0.2359375,
+          0.978125
+        ],
+        "all_heads": 0.259375
+      },
+      "sharpest": [
+        0,
+        1
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 0.00895704204109492,
+          "source_argmax_rate": 0.0,
+          "previous_token_mass": 0.039961825122013246,
+          "ambiguous_source_mass": 0.007415922166456874,
+          "ambiguous_distractor_mass": 0.11078003303681642,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.9833005223026792,
+          "source_argmax_rate": 0.9921875,
+          "previous_token_mass": 3.082546359960889e-05,
+          "ambiguous_source_mass": 0.9782407328747531,
+          "ambiguous_distractor_mass": 0.003596336807593773,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 0.0010977617561759752,
+          "source_argmax_rate": 0.0,
+          "previous_token_mass": 0.3303404326087887,
+          "ambiguous_source_mass": 0.0012416989038269138,
+          "ambiguous_distractor_mass": 0.18927906529322744,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.24325590019377039,
+          "source_argmax_rate": 0.2578125,
+          "previous_token_mass": 0.00010178791619326694,
+          "ambiguous_source_mass": 0.23980432287670025,
+          "ambiguous_distractor_mass": 0.1572893498251462,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.15060125798786989,
+          "source_argmax_rate": 0.1484375,
+          "previous_token_mass": 0.11859687159042856,
+          "ambiguous_source_mass": 0.1608841415590468,
+          "ambiguous_distractor_mass": 0.21321253868486265,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.11268054108404006,
+          "source_argmax_rate": 0.140625,
+          "previous_token_mass": 0.07430703308180699,
+          "ambiguous_source_mass": 0.0734647455099076,
+          "ambiguous_distractor_mass": 0.1162235935127242,
+          "n_queries": 128,
+          "n_ambiguous": 85
+        }
+      ]
+    },
+    {
+      "variant": "2L-attn",
+      "seed": 6,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 0.9890625,
+      "overall_accuracy": 0.678125,
+      "perplexity": 1.9709473478816468,
+      "bigram_copy_accuracy": 0.2453125,
+      "final_loss": 0.48317518190947256,
+      "seconds": 124.68598633399233,
+      "ablation": {
+        "intact": 0.9890625,
+        "per_head": [
+          [
+            0.703125,
+            0.61875,
+            0.99375
+          ],
+          [
+            0.9828125,
+            0.9859375,
+            0.9546875
+          ]
+        ],
+        "per_layer": [
+          0.1671875,
+          0.9515625
+        ],
+        "all_heads": 0.1625
+      },
+      "sharpest": [
+        0,
+        1
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 0.4519752176761011,
+          "source_argmax_rate": 0.453125,
+          "previous_token_mass": 2.5814968751612983e-07,
+          "ambiguous_source_mass": 0.4514028143489619,
+          "ambiguous_distractor_mass": 0.21488767628600977,
+          "n_queries": 128,
+          "n_ambiguous": 84
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.7499965227410288,
+          "source_argmax_rate": 0.75,
+          "previous_token_mass": 1.4880424873762326e-10,
+          "ambiguous_source_mass": 0.7738042782007404,
+          "ambiguous_distractor_mass": 0.09523810318154255,
+          "n_queries": 128,
+          "n_ambiguous": 84
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 0.08286158490342112,
+          "source_argmax_rate": 0.078125,
+          "previous_token_mass": 0.22418327390730353,
+          "ambiguous_source_mass": 0.06351570245106264,
+          "ambiguous_distractor_mass": 0.26396808242588926,
+          "n_queries": 128,
+          "n_ambiguous": 84
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.2121479877507816,
+          "source_argmax_rate": 0.2109375,
+          "previous_token_mass": 0.009515422232029024,
+          "ambiguous_source_mass": 0.18063669693449422,
+          "ambiguous_distractor_mass": 0.2258494054651713,
+          "n_queries": 128,
+          "n_ambiguous": 84
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.057691324439725813,
+          "source_argmax_rate": 0.0546875,
+          "previous_token_mass": 0.23404825627495307,
+          "ambiguous_source_mass": 0.0538391719838887,
+          "ambiguous_distractor_mass": 0.28187455520254867,
+          "n_queries": 128,
+          "n_ambiguous": 84
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.23460152875437248,
+          "source_argmax_rate": 0.234375,
+          "previous_token_mass": 0.009960291387736152,
+          "ambiguous_source_mass": 0.20265745689330636,
+          "ambiguous_distractor_mass": 0.20927907624597722,
+          "n_queries": 128,
+          "n_ambiguous": 84
+        }
+      ]
+    },
+    {
+      "variant": "2L-attn",
+      "seed": 7,
+      "n_layer": 2,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 10032,
+      "copy_accuracy": 0.96875,
+      "overall_accuracy": 0.6765625,
+      "perplexity": 2.0105008583227004,
+      "bigram_copy_accuracy": 0.2703125,
+      "final_loss": 0.5532425540854877,
+      "seconds": 124.05597416695673,
+      "ablation": {
+        "intact": 0.96875,
+        "per_head": [
+          [
+            0.8828125,
+            0.3703125,
+            0.9171875
+          ],
+          [
+            0.96875,
+            0.9515625,
+            0.9640625
+          ]
+        ],
+        "per_layer": [
+          0.2328125,
+          0.971875
+        ],
+        "all_heads": 0.184375
+      },
+      "sharpest": [
+        0,
+        1
+      ],
+      "probes": [
+        {
+          "layer": 0,
+          "head": 0,
+          "source_mass": 2.7150966700817095e-06,
+          "source_argmax_rate": 0.0,
+          "previous_token_mass": 0.21804597216004104,
+          "ambiguous_source_mass": 8.242633041122049e-07,
+          "ambiguous_distractor_mass": 0.33188210922306366,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 0,
+          "head": 1,
+          "source_mass": 0.9689656744994795,
+          "source_argmax_rate": 0.9765625,
+          "previous_token_mass": 9.687335733843703e-09,
+          "ambiguous_source_mass": 0.9669891615671561,
+          "ambiguous_distractor_mass": 8.666250717538508e-06,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 0,
+          "head": 2,
+          "source_mass": 0.6918397094630129,
+          "source_argmax_rate": 0.6875,
+          "previous_token_mass": 6.950971897538265e-05,
+          "ambiguous_source_mass": 0.648822545935765,
+          "ambiguous_distractor_mass": 0.11939038499084152,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 1,
+          "head": 0,
+          "source_mass": 0.10493234624272663,
+          "source_argmax_rate": 0.109375,
+          "previous_token_mass": 0.022079824592227175,
+          "ambiguous_source_mass": 0.09609633321906792,
+          "ambiguous_distractor_mass": 0.28186551561120143,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 1,
+          "head": 1,
+          "source_mass": 0.015600257101122549,
+          "source_argmax_rate": 0.015625,
+          "previous_token_mass": 0.03923301440167968,
+          "ambiguous_source_mass": 0.02105996034888175,
+          "ambiguous_distractor_mass": 0.29142707618926256,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        },
+        {
+          "layer": 1,
+          "head": 2,
+          "source_mass": 0.2762197934682579,
+          "source_argmax_rate": 0.2578125,
+          "previous_token_mass": 0.12132797166469286,
+          "ambiguous_source_mass": 0.2701773744708822,
+          "ambiguous_distractor_mass": 0.20965567470689658,
+          "n_queries": 128,
+          "n_ambiguous": 90
+        }
+      ]
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 0,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 0.9921875,
+      "overall_accuracy": 0.69140625,
+      "perplexity": 2.0441043133487202,
+      "bigram_copy_accuracy": 0.25625,
+      "final_loss": 0.4917947405940436,
+      "seconds": 76.80472537496826,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 1,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 0.7453125,
+      "overall_accuracy": 0.5546875,
+      "perplexity": 2.6693713236029444,
+      "bigram_copy_accuracy": 0.2421875,
+      "final_loss": 0.6617732391872194,
+      "seconds": 76.40597762499237,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 2,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.69375,
+      "perplexity": 2.0514797382165195,
+      "bigram_copy_accuracy": 0.2296875,
+      "final_loss": 0.5216818494070941,
+      "seconds": 76.00071145797847,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 3,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.703125,
+      "perplexity": 1.93872095755461,
+      "bigram_copy_accuracy": 0.2625,
+      "final_loss": 0.4841131199503423,
+      "seconds": 76.40641954197781,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 4,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 0.996875,
+      "overall_accuracy": 0.6984375,
+      "perplexity": 1.906534255473626,
+      "bigram_copy_accuracy": 0.24375,
+      "final_loss": 0.4851602690198799,
+      "seconds": 76.51299249997828,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 5,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.69296875,
+      "perplexity": 2.2770935217518056,
+      "bigram_copy_accuracy": 0.2484375,
+      "final_loss": 0.48353026443033187,
+      "seconds": 76.79924641596153,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 6,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.68046875,
+      "perplexity": 2.130348772906441,
+      "bigram_copy_accuracy": 0.2453125,
+      "final_loss": 0.47916593487462644,
+      "seconds": 76.61612254200736,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn",
+      "seed": 7,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 5232,
+      "effective_parameters": 5232,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.69921875,
+      "perplexity": 1.8962005056542626,
+      "bigram_copy_accuracy": 0.2703125,
+      "final_loss": 0.5895357382964237,
+      "seconds": 76.55936458404176,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 0,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 0.8984375,
+      "overall_accuracy": 0.63515625,
+      "perplexity": 2.4327724435393967,
+      "bigram_copy_accuracy": 0.25625,
+      "final_loss": 0.5270915784932083,
+      "seconds": 131.89049554202938,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 1,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.6828125,
+      "perplexity": 1.956039826708813,
+      "bigram_copy_accuracy": 0.2421875,
+      "final_loss": 0.4746658358041773,
+      "seconds": 132.34554808295798,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 2,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.68828125,
+      "perplexity": 1.9099611693249845,
+      "bigram_copy_accuracy": 0.2296875,
+      "final_loss": 0.4864156907572951,
+      "seconds": 132.28881687502144,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 3,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.69609375,
+      "perplexity": 1.903532674256733,
+      "bigram_copy_accuracy": 0.2625,
+      "final_loss": 0.5070830994515902,
+      "seconds": 132.55098241596716,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 4,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.7046875,
+      "perplexity": 1.8921841650044597,
+      "bigram_copy_accuracy": 0.24375,
+      "final_loss": 0.522907536725657,
+      "seconds": 133.72842245799256,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 5,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 0.9875,
+      "overall_accuracy": 0.68203125,
+      "perplexity": 2.3520562275073864,
+      "bigram_copy_accuracy": 0.2484375,
+      "final_loss": 0.5197183905952095,
+      "seconds": 133.37261600000784,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 6,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 0.9234375,
+      "overall_accuracy": 0.646875,
+      "perplexity": 2.678837157215191,
+      "bigram_copy_accuracy": 0.2453125,
+      "final_loss": 0.5345311968409122,
+      "seconds": 132.91937583399704,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "1L-attn-wide",
+      "seed": 7,
+      "n_layer": 1,
+      "mixer": "attention",
+      "d_ff": 146,
+      "parameters": 10034,
+      "effective_parameters": 10034,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.6890625,
+      "perplexity": 2.043586596409402,
+      "bigram_copy_accuracy": 0.2703125,
+      "final_loss": 0.4725070673535529,
+      "seconds": 133.794081791013,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 0,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 0.975,
+      "overall_accuracy": 0.67890625,
+      "perplexity": 2.0995135239326546,
+      "bigram_copy_accuracy": 0.25625,
+      "final_loss": 0.4989650307449175,
+      "seconds": 226.47429724998074,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 1,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 0.978125,
+      "overall_accuracy": 0.684375,
+      "perplexity": 1.945443183225003,
+      "bigram_copy_accuracy": 0.2421875,
+      "final_loss": 0.5419667239081625,
+      "seconds": 225.16102225001669,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 2,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.6890625,
+      "perplexity": 2.0090935440470132,
+      "bigram_copy_accuracy": 0.2296875,
+      "final_loss": 0.47374489499715583,
+      "seconds": 223.2990839590202,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 3,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 0.9796875,
+      "overall_accuracy": 0.68984375,
+      "perplexity": 1.9872635783697172,
+      "bigram_copy_accuracy": 0.2625,
+      "final_loss": 0.4990332759109294,
+      "seconds": 223.6949814579566,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 4,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.69296875,
+      "perplexity": 1.8926093955322976,
+      "bigram_copy_accuracy": 0.24375,
+      "final_loss": 0.515398538680598,
+      "seconds": 223.0984732080251,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 5,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 0.9359375,
+      "overall_accuracy": 0.675,
+      "perplexity": 2.2880778449359918,
+      "bigram_copy_accuracy": 0.2484375,
+      "final_loss": 0.8623288080277678,
+      "seconds": 223.57664970797487,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 6,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 0.990625,
+      "overall_accuracy": 0.68515625,
+      "perplexity": 1.9628591388863432,
+      "bigram_copy_accuracy": 0.2453125,
+      "final_loss": 0.5332174540118841,
+      "seconds": 226.19379266700707,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "3L-attn",
+      "seed": 7,
+      "n_layer": 3,
+      "mixer": "attention",
+      "d_ff": 48,
+      "parameters": 14832,
+      "effective_parameters": 14832,
+      "copy_accuracy": 1.0,
+      "overall_accuracy": 0.69453125,
+      "perplexity": 1.9547304509240333,
+      "bigram_copy_accuracy": 0.2703125,
+      "final_loss": 0.5316841034789122,
+      "seconds": 227.01936091599055,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 0,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.5046875,
+      "overall_accuracy": 0.45078125,
+      "perplexity": 3.4834193478054547,
+      "bigram_copy_accuracy": 0.25625,
+      "final_loss": 0.8487710776074826,
+      "seconds": 110.66159804194467,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 1,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.503125,
+      "overall_accuracy": 0.45,
+      "perplexity": 3.7586297442437764,
+      "bigram_copy_accuracy": 0.2421875,
+      "final_loss": 0.8719972205750032,
+      "seconds": 111.53376070800005,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 2,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.5421875,
+      "overall_accuracy": 0.46171875,
+      "perplexity": 3.931898751963301,
+      "bigram_copy_accuracy": 0.2296875,
+      "final_loss": 0.7140895392509916,
+      "seconds": 109.77888470800826,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 3,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.56875,
+      "overall_accuracy": 0.47890625,
+      "perplexity": 3.1800405549120923,
+      "bigram_copy_accuracy": 0.2625,
+      "final_loss": 0.9001388583225949,
+      "seconds": 111.6827020419878,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 4,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.5359375,
+      "overall_accuracy": 0.4609375,
+      "perplexity": 3.2162845990358875,
+      "bigram_copy_accuracy": 0.24375,
+      "final_loss": 0.8887509563565416,
+      "seconds": 110.7985275000101,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 5,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.4875,
+      "overall_accuracy": 0.44296875,
+      "perplexity": 4.781213395783605,
+      "bigram_copy_accuracy": 0.2484375,
+      "final_loss": 0.8531539722609951,
+      "seconds": 110.30773083399981,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 6,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.5109375,
+      "overall_accuracy": 0.453125,
+      "perplexity": 3.9617431756971317,
+      "bigram_copy_accuracy": 0.2453125,
+      "final_loss": 0.7819499735923794,
+      "seconds": 109.00751929101534,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    },
+    {
+      "variant": "2L-uniform",
+      "seed": 7,
+      "n_layer": 2,
+      "mixer": "uniform",
+      "d_ff": 48,
+      "parameters": 10032,
+      "effective_parameters": 7728,
+      "copy_accuracy": 0.509375,
+      "overall_accuracy": 0.446875,
+      "perplexity": 4.1459716783396265,
+      "bigram_copy_accuracy": 0.2703125,
+      "final_loss": 0.7795611358839046,
+      "seconds": 108.92801304202294,
+      "ablation": null,
+      "sharpest": null,
+      "probes": []
+    }
+  ]
+}
