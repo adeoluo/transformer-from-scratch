@@ -1,6 +1,6 @@
 [project]
 name = "transformer-from-scratch"
-version = "0.1.0"
+version = "0.2.0"
 description = "A transformer language model and a reverse-mode autodiff engine built from scratch in Python, with no numerical libraries"
 readme = "README.md"
 requires-python = ">=3.11"
