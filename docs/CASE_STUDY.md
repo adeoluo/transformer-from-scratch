@@ -6,10 +6,10 @@ a large model; it is a small model whose every component is verified.
 
 ## The problem
 
-Implement a decoder-only transformer and its training stack — reverse-mode
+Implement a decoder-only transformer and its training stack: reverse-mode
 automatic differentiation, multi-head causal attention, pre-norm residual blocks,
 a GELU feed-forward network, layer normalization, weight-tied embeddings, and an
-Adam optimizer — in pure Python with no numerical libraries, and prove it is
+Adam optimizer, in pure Python with no numerical libraries, and prove it is
 correct.
 
 "Prove it is correct" is the hard part. A model that trains to a low loss can
