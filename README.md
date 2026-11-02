@@ -33,11 +33,18 @@ exactly what attention buys.
   <img src="docs/architecture/architecture.svg" alt="Architecture diagram" width="860">
 </p>
 
+<sub>Legend: amber = entry points and external systems, indigo = core logic, green = data and state, blue = validation and control, grey = observability and outputs.</sub>
+
 The engine records a local backward closure for each operation and runs them in reverse
 topological order, which is reverse-mode autodiff. The model stacks pre-norm blocks of
 multi-head causal self-attention and a GELU feed-forward network, with weight-tied input and
-output embeddings. Training uses an Adam optimizer written from scratch. See the
-[ADRs](docs/adr/) for the key decisions.
+output embeddings. Training uses an Adam optimizer written from scratch, on the synthetic copy
+task or at the character level on a bundled real-text excerpt, and models save to and load
+from JSON checkpoints. Evaluation reports copy accuracy and perplexity against a bigram
+baseline and bits per character against a unigram baseline; the research study ablates heads
+and compares depth and attention variants; and an optional test checks the logits against
+PyTorch. The HTTP service validates requests, serves generation, evaluation, and attention
+inspection, and records per-route metrics. See the [ADRs](docs/adr/) for the key decisions.
 
 ### The autodiff engine
 
