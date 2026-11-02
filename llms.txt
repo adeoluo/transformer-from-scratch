@@ -1,0 +1,38 @@
+# Transformer From Scratch
+
+> A reverse-mode automatic differentiation engine and a decoder-only transformer language model, built from scratch, with every gradient verified against finite differences.
+
+Languages: Python. License: MIT. Source: https://github.com/adeoluo/transformer-from-scratch
+
+## Docs
+
+- [README](https://github.com/adeoluo/transformer-from-scratch/blob/main/README.md): motivation, architecture, results, quickstart, usage, design decisions, testing, responsible ai, limitations, roadmap
+- [AGENTS.md](https://github.com/adeoluo/transformer-from-scratch/blob/main/AGENTS.md): layout, commands and conventions for changing the code
+- [Architecture diagram](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/architecture/architecture.mmd): Mermaid source of the component diagram
+- [Case study: validating a from-scratch transformer](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/CASE_STUDY.md)
+- [Data Card - Transformer From Scratch](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/DATA_CARD.md)
+- [Definition of Done](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/DEFINITION_OF_DONE.md)
+- [Evaluation Report - Transformer From Scratch](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/EVALUATION_REPORT.md)
+- [Model / System Card - Transformer From Scratch](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/MODEL_CARD.md)
+- [What makes copying work: a causal study of induction in a small transformer](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/RESEARCH.md)
+- [Threat Model - Transformer From Scratch](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/THREAT_MODEL.md)
+- [ADR-0001: Record architecture decisions](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/adr/0001-record-architecture-decisions.md)
+- [ADR-0002: A matrix-valued autodiff engine, not scalar autograd](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/adr/0002-matrix-autodiff.md)
+- [ADR-0003: A copy task that an n-gram model provably cannot solve](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/adr/0003-copy-task.md)
+- [ADR-NNNN: <short title>](https://github.com/adeoluo/transformer-from-scratch/blob/main/docs/adr/template.md)
+- [Changelog](https://github.com/adeoluo/transformer-from-scratch/blob/main/CHANGELOG.md): release history
+
+## Source
+
+- [src/transformer_from_scratch/__init__.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/__init__.py): Transformer From Scratch - an autodiff engine and a transformer language model.
+- [src/transformer_from_scratch/cli.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/cli.py): Command line interface for the transformer.
+- [src/transformer_from_scratch/data.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/data.py): The induction (copy) task: data the model can only solve by attending back.
+- [src/transformer_from_scratch/evaluation.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/evaluation.py): Evaluation: next-token accuracy, copy-region accuracy, perplexity, baseline.
+- [src/transformer_from_scratch/inspect.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/inspect.py): Inspecting what the trained model attends to.
+- [src/transformer_from_scratch/model.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/model.py): A decoder-only transformer language model built on the autodiff engine.
+- [src/transformer_from_scratch/observability.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/observability.py): In-process request metrics for the HTTP service (Prometheus text exposition).
+- [src/transformer_from_scratch/research.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/research.py): A causal study of how the copy task is solved, and what architecture it needs.
+- [src/transformer_from_scratch/service.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/service.py): A standard-library HTTP service exposing the trained transformer.
+- [src/transformer_from_scratch/tensor.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/tensor.py): A small reverse-mode automatic differentiation engine over dense matrices.
+- [src/transformer_from_scratch/text.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/text.py): Character-level language modeling on real English text.
+- [src/transformer_from_scratch/training.py](https://github.com/adeoluo/transformer-from-scratch/blob/main/src/transformer_from_scratch/training.py): Training the transformer with an Adam optimizer written from scratch.
