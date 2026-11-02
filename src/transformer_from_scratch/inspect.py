@@ -1,7 +1,9 @@
 """Inspecting what the trained model attends to.
 
-The copy task is solved by an induction head: when predicting a token in the
-second copy, the head attends to the matching position in the first copy. This
+The copy task is solved by attending back: when predicting a token in the second
+copy, a head attends to the matching position in the first copy. (The research
+study in ``docs/RESEARCH.md`` finds that in this model that head sits in layer 1
+and matches by position rather than forming a two-layer induction circuit.) This
 module recomputes a single head's causal attention pattern for a sequence so the
 behavior can be read off directly, and summarizes how much weight lands on the
 induction offset. The same hooks are reused by the interpretability project.
@@ -34,8 +36,11 @@ def attention_pattern(
 ) -> list[list[float]]:
     """Return the ``(T, T)`` causal attention weights of one layer and head."""
 
-    x = _forward_to_layer(model, token_ids, layer)
     attn_head = model.blocks[layer].attn.heads[head]
+    if attn_head.uniform:
+        n = len(token_ids)
+        return [[1.0 / (i + 1) if j <= i else 0.0 for j in range(n)] for i in range(n)]
+    x = _forward_to_layer(model, token_ids, layer)
     w_q = attn_head.w_q.data
     w_k = attn_head.w_k.data
     d_head = attn_head.w_q.cols

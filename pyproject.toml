@@ -53,6 +53,9 @@ disallow_untyped_defs = true
 [tool.pytest.ini_options]
 addopts = "-ra -q"
 testpaths = ["tests"]
+markers = [
+    "slow: long-running end-to-end checks (deselect with -m \"not slow\")",
+]
 
 [tool.coverage.run]
 source = ["src"]

@@ -3,8 +3,10 @@
 A sequence is a random string of symbols, a separator, then the same string
 again. The language model is trained to predict the next token everywhere, but
 the interesting positions are in the second copy: to predict them the model must
-look back to the matching position in the first copy, which is exactly what an
-attention induction head does. A fixed-order n-gram model cannot, because the
+look back to the matching position in the first copy, which attention can do (an
+induction head is one way; because every sequence has the same length, a head
+that attends a fixed distance back is another, and docs/RESEARCH.md shows that
+is what this model learns). A fixed-order n-gram model cannot, because the
 symbol to copy depends on a token many positions earlier, not on the local
 context.
 
