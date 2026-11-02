@@ -9,7 +9,7 @@ a large model; it is a small model whose every component is verified.
 Implement a decoder-only transformer and its training stack: reverse-mode
 automatic differentiation, multi-head causal attention, pre-norm residual blocks,
 a GELU feed-forward network, layer normalization, weight-tied embeddings, and an
-Adam optimizer, in pure Python with no numerical libraries, and prove it is
+Adam optimizer, from scratch in Python, and prove it is
 correct.
 
 "Prove it is correct" is the hard part. A model that trains to a low loss can
@@ -39,7 +39,7 @@ is in the quality of the evidence, not the size of the model.
    pass is reconstructed in PyTorch with the same weights; logits and
    cross-entropy match to better than `1e-9`. This is an independent reference
    implementation, not a self-consistency check. PyTorch is an opt-in validation
-   dependency, so the core library stays zero-dependency.
+   dependency, so default CI does not install it.
 
 ## Evidence it learns
 

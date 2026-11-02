@@ -1,4 +1,4 @@
-"""A dependency-free HTTP service exposing the trained transformer.
+"""A standard-library HTTP service exposing the trained transformer.
 
 The service trains a small transformer once at startup, then answers generation,
 evaluation, and attention-inspection requests. The routing logic is a pure

@@ -6,8 +6,8 @@ For each workload it reports wall-clock seconds, inference throughput in
 sequences per second, peak memory in MiB measured with the standard-library
 ``tracemalloc`` module, and held-out copy accuracy as the quality metric.
 
-The data is synthetic and the model is intentionally tiny. This pure-Python
-from-scratch implementation is not competitive on wall-clock time with compiled
+The data is synthetic and the model is intentionally tiny. This from-scratch Python
+implementation is not competitive on wall-clock time with compiled
 tensor libraries; the point is to show how the hand-written forward pass scales,
 not to beat PyTorch. Deterministic and offline; run with:
 
@@ -75,7 +75,7 @@ def run_scale(sizes: tuple[int, ...] = WORKLOAD_SIZES, *, steps: int = 80) -> li
 
 def main() -> None:
     print("Synthetic copy-task data; tiny from-scratch transformer.")
-    print("Pure-Python inference; not benchmarked against compiled tensor libraries.")
+    print("Interpreted-Python inference; not benchmarked against compiled tensor libraries.")
     print(f"{'sequences':>10}  {'seconds':>9}  {'seq/sec':>9}  {'peak MiB':>9}  {'copy acc':>9}")
     for row in run_scale():
         print(

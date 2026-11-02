@@ -356,7 +356,7 @@ half of the symbols, mostly the early ones.
 - **Head selection by sharpness.** H1 named "the sharpest head" as the candidate. That choice
   was made before running, and the results show it is an imperfect selector; the per-seed table
   reports the ablation-selected critical head alongside it so both readings are visible.
-- **Pure-Python budget.** The engine is slow (about a minute per 2-layer run), which is what
+- **Compute budget.** The engine is slow (about a minute per 2-layer run), which is what
   limited the study to 8 seeds, a single task size, and no hyperparameter sweep.
 - **Post-hoc analysis is exploratory.** The per-target tables and the refuted counting
   explanation were produced after seeing the main results and are not covered by the
