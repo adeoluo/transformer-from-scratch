@@ -111,8 +111,10 @@ def test_checkpoint_round_trips_exactly() -> None:
         path = Path(directory) / "checkpoint.json"
         model.save(path)
         restored = Transformer.load(path)
-    assert restored.logits(token_ids).data == model.logits(token_ids).data
-    assert [p.data for p in restored.parameters()] == [p.data for p in model.parameters()]
+    assert restored.logits(token_ids).data.tolist() == model.logits(token_ids).data.tolist()
+    assert [p.data.tolist() for p in restored.parameters()] == [
+        p.data.tolist() for p in model.parameters()
+    ]
 
 
 def test_checkpoint_rejects_mismatched_shape() -> None:

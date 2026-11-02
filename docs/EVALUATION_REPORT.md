@@ -26,9 +26,9 @@ better than `1e-4`; the worst observed difference is around `1e-10`. This is enf
 
 | Metric | Transformer | Bigram baseline | Delta |
 |---|---:|---:|---:|
-| held-out copy accuracy | **0.903** | 0.234 | +0.669 |
-| overall next-token accuracy | 0.623 | 0.209 | +0.414 |
-| perplexity | 2.285 | - | - |
+| held-out copy accuracy | **0.872** | 0.234 | +0.638 |
+| overall next-token accuracy | 0.622 | 0.209 | +0.413 |
+| perplexity | 2.460 | - | - |
 
 The copy-accuracy gap is the headline: attention copies, the n-gram model cannot. Overall
 accuracy is capped because the first half of each sequence is random by construction.
@@ -37,8 +37,8 @@ accuracy is capped because the first half of each sequence is random by construc
 
 | Attention statistic (sharpest head over the copy region) | Untrained | Trained |
 |---|---:|---:|
-| mean peak weight | 0.425 | 0.981 |
-| mean entropy | 1.84 | 0.00 |
+| mean peak weight | 0.425 | 0.994 |
+| mean entropy | 1.55 | 0.02 |
 
 An untrained head is diffuse; a trained head concentrates almost all of its weight on a few
 source positions. The entropy collapse is a direct readout that structured attention was learned.
@@ -53,8 +53,9 @@ the default is set at the stable optimum.
 
 Greedy generation recomputes a full forward pass per new token (no key-value cache). Under a
 concurrent stress benchmark (`uv run python benchmarks/stress.py`, 2000 requests, 8 workers) the
-`/generate` handler sustains roughly 50 requests per second with p50 near 140 ms. This reflects
-interpreted-Python execution and the absence of a cache, and is reported rather than hidden.
+`/generate` handler sustains roughly 459 requests per second with p50 near 2 ms and p99 near
+170 ms. The tail reflects the absence of a key-value cache and one-sequence-at-a-time execution,
+and is reported rather than hidden.
 
 ## Reproducibility
 

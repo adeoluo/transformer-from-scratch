@@ -16,7 +16,7 @@ def test_matmul_values() -> None:
     a = Tensor([[1.0, 2.0], [3.0, 4.0]])
     b = Tensor([[5.0, 6.0], [7.0, 8.0]])
     out = T.matmul(a, b)
-    assert out.data == [[19.0, 22.0], [43.0, 50.0]]
+    assert out.data.tolist() == [[19.0, 22.0], [43.0, 50.0]]
 
 
 def test_causal_softmax_is_lower_triangular_and_normalized() -> None:
@@ -42,7 +42,7 @@ def test_concat_cols_shapes() -> None:
     b = Tensor([[3.0, 4.0], [5.0, 6.0]])
     out = T.concat_cols([a, b])
     assert out.shape == (2, 3)
-    assert out.data == [[1.0, 3.0, 4.0], [2.0, 5.0, 6.0]]
+    assert out.data.tolist() == [[1.0, 3.0, 4.0], [2.0, 5.0, 6.0]]
 
 
 def test_model_logits_shape() -> None:
@@ -121,7 +121,7 @@ def test_training_is_deterministic() -> None:
     cfg = ModelConfig(vocab_size=task.vocab_size, context=task.seq_len, d_model=12, n_head=2)
     a = train(task, cfg, TrainConfig(steps=8, batch_size=6, seed=0))
     b = train(task, cfg, TrainConfig(steps=8, batch_size=6, seed=0))
-    assert a.model.token_embed.data == b.model.token_embed.data
+    assert a.model.token_embed.data.tolist() == b.model.token_embed.data.tolist()
 
 
 def test_attention_sharpness_increases_with_training(trained, small_task, small_cfg) -> None:  # type: ignore[no-untyped-def]
