@@ -231,6 +231,16 @@ curl -s localhost:8000/generate -d '{"prompt": [1,2,3,4,0], "max_new_tokens": 5}
 curl -s localhost:8000/attention -d '{"tokens": [1,2,3,4,0,1], "layer": 0, "head": 1}'
 ```
 
+### Demos
+
+Recorded from real runs with [vhs](https://github.com/charmbracelet/vhs); each tape is in `docs/demo/`.
+
+Training the from-scratch transformer and comparing it to a bigram baseline.
+
+<p align="center">
+  <img src="docs/demo/train.gif" alt="Training the from-scratch transformer and comparing it to a bigram baseline" width="860">
+</p>
+
 ## Design decisions
 
 - **A matrix-valued autodiff engine, not scalar autograd** - scalar (micrograd-style) autodiff
