@@ -1,11 +1,71 @@
 flowchart LR
-    Data[(Copy task and text)] --> Embed[Token and position embeddings]
-    Embed --> Attn[Causal self-attention]
-    Attn --> FFN[GELU feed-forward]
-    FFN --> Head[Tied output head]
-    Head --> Loss[Cross-entropy loss]
-    Loss --> Backward[Reverse-mode autodiff]
-    Backward --> Adam[Adam optimizer]
-    Adam -.->|updated weights| Embed
-    Client([Client]) --> Router[HTTP router]
-    Router --> Embed
+    classDef edge     fill:#F59E0B,stroke:#1E293B,color:#1E293B,stroke-width:1px;
+    classDef core     fill:#6366F1,stroke:#1E293B,color:#ffffff,stroke-width:1px;
+    classDef data     fill:#10B981,stroke:#1E293B,color:#ffffff,stroke-width:1px;
+    classDef control  fill:#0EA5E9,stroke:#1E293B,color:#ffffff,stroke-width:1px;
+    classDef obs      fill:#CBD5E1,stroke:#1E293B,color:#1E293B,stroke-width:1px;
+
+    CLI(["CLI<br/>train | evaluate | generate | attention | serve"]):::edge
+    Bench(["Benchmark scripts<br/>text_training, research_study"]):::edge
+    Client(["HTTP client"]):::edge
+    Torch(["PyTorch<br/>optional validation extra"]):::edge
+
+    subgraph Data["Data (bundled, seeded)"]
+        direction TB
+        Copy[("Copy task<br/>disjoint train and test strings")]:::data
+        Corpus[("Real text<br/>Austen excerpt, character vocab")]:::data
+    end
+
+    subgraph Engine["Autodiff engine and model"]
+        direction TB
+        Tensor["Autodiff engine<br/>Tensor ops, reverse-mode backward"]:::core
+        Model["Decoder-only transformer<br/>pre-norm blocks, causal MHA, tied embeddings"]:::core
+    end
+
+    subgraph Train["Training and checkpoints"]
+        direction TB
+        Loop["Training loop<br/>minibatch loss, Adam from scratch"]:::core
+        TextLM["Character LM training<br/>train_char_lm on real text"]:::core
+        Ckpt[("JSON checkpoint<br/>save / load config + weights")]:::data
+    end
+
+    subgraph Edge["Interfaces (stdlib HTTP, trained at startup)"]
+        direction TB
+        Router["Router<br/>/health | /ready | /generate | /evaluate | /attention"]:::core
+        Validate["Validation<br/>token ids in vocab, length caps"]:::control
+        Generate["Greedy generation<br/>prompt continuation"]:::core
+    end
+
+    subgraph Eval["Evaluation, research, and observability"]
+        direction TB
+        Evaluate["Copy evaluation<br/>copy accuracy, perplexity vs bigram"]:::obs
+        BPC["Bits per character<br/>vs unigram baseline"]:::obs
+        Inspect["Attention inspection<br/>sharpest head pattern"]:::obs
+        Research["Research study<br/>head ablation, depth, attention arms"]:::obs
+        Parity["PyTorch parity test<br/>logits match to tolerance"]:::obs
+        Metrics["Route metrics<br/>Prometheus GET /metrics"]:::obs
+    end
+
+    CLI -->|train, evaluate, generate, attention| Loop
+    Bench -->|text_training| TextLM
+    Bench -->|research_study| Research
+    Copy -->|token sequences| Loop
+    Corpus -->|character windows| TextLM
+    Tensor -->|differentiable ops| Model
+    Model -->|forward + loss.backward| Loop
+    Model -->|forward + loss.backward| TextLM
+    Loop -->|save / load| Ckpt
+    Loop -->|trained model| Evaluate
+    Loop -->|trained model| Inspect
+    Loop -->|one arm per variant and seed| Research
+    TextLM -->|trained char model| BPC
+    Torch -->|reference forward pass| Parity
+    Model -.->|same weights| Parity
+    Client -->|JSON request| Router
+    Router -->|POST /generate, /attention| Validate
+    Validate -->|prompt tokens| Generate
+    Loop -.->|trained model| Generate
+    Validate -->|tokens, layer, head| Inspect
+    Router -->|GET /evaluate| Evaluate
+    Copy -.->|held-out strings| Evaluate
+    Router -.-> Metrics
