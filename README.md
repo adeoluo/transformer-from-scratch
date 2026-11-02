@@ -241,6 +241,18 @@ Training the from-scratch transformer and comparing it to a bigram baseline.
   <img src="docs/demo/train.gif" alt="Training the from-scratch transformer and comparing it to a bigram baseline" width="860">
 </p>
 
+The HTTP service generating a continuation, then the held-out evaluation.
+
+<p align="center">
+  <img src="docs/demo/http.gif" alt="The HTTP service generating a continuation, then the held-out evaluation" width="860">
+</p>
+
+Training, then the attention pattern of the sharpest head.
+
+<p align="center">
+  <img src="docs/demo/attention.gif" alt="Training, then the attention pattern of the sharpest head" width="860">
+</p>
+
 ## Design decisions
 
 - **A matrix-valued autodiff engine, not scalar autograd** - scalar (micrograd-style) autodiff
