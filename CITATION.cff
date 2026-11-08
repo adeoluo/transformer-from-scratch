@@ -6,8 +6,8 @@ abstract: "A reverse-mode automatic differentiation engine and a decoder-only tr
 authors:
   - family-names: "Ogunnoiki"
     given-names: "Adeolu"
-version: "0.2.0"
-date-released: "2026-11-02"
+version: "0.2.1"
+date-released: "2026-11-08"
 license: MIT
 repository-code: "https://github.com/adeoluo/transformer-from-scratch"
 url: "https://github.com/adeoluo/transformer-from-scratch"
