@@ -1,10 +1,22 @@
 cff-version: 1.2.0
-message: "If you use this work, please cite it."
+message: "If you use this software, please cite it as below."
+type: software
 title: "Transformer From Scratch"
+abstract: "A reverse-mode automatic differentiation engine and a decoder-only transformer language model, built from scratch; gradients verified against finite differences and attention demonstrated on a copy task."
 authors:
   - family-names: "Ogunnoiki"
     given-names: "Adeolu"
-version: 0.1.0
-date-released: 2026-01-01
+version: "0.2.0"
+date-released: "2026-11-02"
 license: MIT
+repository-code: "https://github.com/adeoluo/transformer-from-scratch"
 url: "https://github.com/adeoluo/transformer-from-scratch"
+keywords:
+  - "attention"
+  - "autodiff"
+  - "backpropagation"
+  - "deep-learning"
+  - "from-scratch"
+  - "language-model"
+  - "python"
+  - "transformer"
