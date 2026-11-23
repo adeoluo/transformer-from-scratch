@@ -15,6 +15,19 @@
 
 > **Evidence level: reference validated.** Forward logits and every backward gradient match PyTorch within 1e-9 in CI. Trained only on toy tasks. Not independently reproduced and not used in production. [What the levels mean](https://github.com/adeoluo#evidence-levels).
 
+## In plain English
+
+The transformer is the engine inside ChatGPT-style models. This is one built from nothing but
+NumPy, including the learning math, which is written out by hand.
+
+- **The math is proven right.** All 48 sets of gradients match PyTorch to better than
+  0.000000001, and this is checked automatically on every change.
+- **It really learns.** It reaches 87.2% accuracy on a copy task, against 23.4% for a simple
+  baseline.
+
+**Where it falls short:** it is a small model trained on toy tasks. It is for reading and
+learning, not for real workloads.
+
 ## Motivation
 
 A transformer is usually a few lines on top of a framework that hides the two things worth
