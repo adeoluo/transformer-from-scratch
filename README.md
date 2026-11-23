@@ -127,10 +127,11 @@ state-of-the-art language model.
 ### Independent validation: PyTorch numerical parity
 
 The hand-written autodiff is validated two ways. `tests/test_autograd.py` checks analytic gradients
-against finite differences; `tests/test_torch_parity.py` reconstructs the exact forward pass in
-**PyTorch**, loads the same weights, and asserts the logits and cross-entropy match to **better than
-1e-9**. PyTorch is an opt-in `validation` dependency group, not a runtime dependency, and default CI does
-not require it. Run the parity check with:
+against finite differences; `tests/test_torch_parity.py` reconstructs the exact forward and
+backward pass in **PyTorch**, loads the same weights, and asserts logits, cross-entropy loss, and
+all 48 parameter gradients match to **better than 1e-9**. PyTorch lives in the optional
+`validation` dependency group (so the installed runtime package depends only on `numpy`) and runs
+automatically in CI on Python 3.12 and 3.13:
 
 ```bash
 uv sync --group validation && uv run pytest tests/test_torch_parity.py
