@@ -13,6 +13,8 @@
 
 ---
 
+> **Evidence level: reference validated.** Forward logits and every backward gradient match PyTorch within 1e-9 in CI. Trained only on toy tasks. Not independently reproduced and not used in production. [What the levels mean](https://github.com/adeoluo#evidence-levels).
+
 ## Motivation
 
 A transformer is usually a few lines on top of a framework that hides the two things worth
