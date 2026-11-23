@@ -1,7 +1,7 @@
 [project]
 name = "transformer-from-scratch"
 version = "0.2.1"
-description = "A transformer language model and a reverse-mode autodiff engine built from scratch in Python, with no numerical libraries"
+description = "A decoder-only transformer and reverse-mode autodiff engine in Python with hand-derived gradients over 2-D NumPy arrays and no deep-learning framework"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
