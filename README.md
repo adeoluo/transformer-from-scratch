@@ -15,7 +15,7 @@
 
 > **Evidence level: reference validated.** Forward logits and every backward gradient match PyTorch within 1e-9 in CI. Trained only on toy tasks. Not independently reproduced and not used in production. [What the levels mean](https://github.com/adeoluo#evidence-levels).
 
-## Summary
+## Highlights
 
 The transformer is the engine inside ChatGPT-style models. This is one built from nothing but
 NumPy, including the learning math, which is written out by hand.
