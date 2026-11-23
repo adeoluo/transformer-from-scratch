@@ -81,11 +81,11 @@ do this because the token to emit depends on one many positions earlier, not on 
 The from-scratch transformer reaches **0.872 copy accuracy versus 0.234** for a bigram model
 estimated on the same data, a near-4x gap that exists entirely because attention can copy and
 an n-gram model cannot. Overall accuracy is capped because the first half of each sequence is
-random and unpredictable by construction. This is one seed; the
-[research study](docs/RESEARCH.md) trains each architecture on 8 seeds, where the same model
-averages 0.984 ± 0.041 on a larger held-out set. (Under the earlier list-based engine this seed
-scored 0.903: the two engines agree to the last bits, but 300 steps of training amplify those
-differences, which is ordinary seed-to-seed variation.)
+random and unpredictable by construction. Because `seed=0` runs 300 Adam steps over BLAS matrix
+multiplies whose floating-point summation order differs between Apple Accelerate (macOS ARM64,
+`0.872`) and OpenBLAS (Linux x86-64, typically `~0.71 - 0.90` on a single 300-step seed), the
+[research study](docs/RESEARCH.md) evaluates 8 seeds at 600 steps, where the same architecture
+averages **0.984 ± 0.041** on a larger held-out set across platforms.
 
 ### Attention becomes confident as it learns
 
