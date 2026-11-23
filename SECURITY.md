@@ -13,4 +13,3 @@ maintainer. Please do not open public issues for vulnerabilities.
 - **Secrets:** provided via `.env` (never committed); see `.env.example`.
 
 For LLM-specific threats (prompt injection, jailbreak, data exfiltration), see
-[`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).

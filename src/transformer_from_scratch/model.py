@@ -241,6 +241,18 @@ class Transformer:
                 param.data[i] = list(values[i])
         return model
 
+    def generate(self, prompt: list[int], max_new_tokens: int) -> list[int]:
+        """Greedily extend ``prompt`` by up to ``max_new_tokens`` tokens."""
+
+        tokens = list(prompt)
+        for _ in range(max_new_tokens):
+            if len(tokens) >= self.cfg.context:
+                break
+            logits = self.logits(tokens)
+            last = logits.data[-1]
+            tokens.append(max(range(len(last)), key=lambda j: float(last[j])))
+        return tokens
+
     def save(self, path: str | Path) -> None:
         """Write a JSON checkpoint of the config and parameters to ``path``."""
 

@@ -13,7 +13,6 @@ from transformer_from_scratch.data import (
 from transformer_from_scratch.evaluation import BigramBaseline, evaluate, evaluate_bigram
 from transformer_from_scratch.inspect import attention_pattern, sharpest_head
 from transformer_from_scratch.model import ModelConfig
-from transformer_from_scratch.service import generate
 from transformer_from_scratch.training import TrainConfig, train
 
 
@@ -59,7 +58,7 @@ def _cmd_evaluate(args: argparse.Namespace) -> None:
 def _cmd_generate(args: argparse.Namespace) -> None:
     task, result = _train(args)
     prompt = test_sequences(task, seed=args.seed)[0][: task.length + 1]
-    out = generate(result.model, prompt, task.length)
+    out = result.model.generate(prompt, task.length)
     print(f"prompt:    {prompt}")
     print(f"generated: {out}")
     print(f"expected:  {test_sequences(task, seed=args.seed)[0]}")
@@ -75,12 +74,6 @@ def _cmd_attention(args: argparse.Namespace) -> None:
     for i, row in enumerate(pattern):
         cells = " ".join(f"{w:.2f}" for w in row[: i + 1])
         print(f"  pos {i:>2} (tok {inputs[i]}): {cells}")
-
-
-def _cmd_serve(args: argparse.Namespace) -> None:
-    from transformer_from_scratch.service import serve
-
-    serve(host=args.host, port=args.port)
 
 
 def _add_common(parser: argparse.ArgumentParser) -> None:
@@ -102,16 +95,11 @@ def main(argv: list[str] | None = None) -> None:
         p = sub.add_parser(name, help=help_text)
         _add_common(p)
 
-    serve = sub.add_parser("serve", help="start the HTTP service")
-    serve.add_argument("--host", default="127.0.0.1")
-    serve.add_argument("--port", type=int, default=8000)
-
     handlers = {
         "train": _cmd_train,
         "evaluate": _cmd_evaluate,
         "generate": _cmd_generate,
         "attention": _cmd_attention,
-        "serve": _cmd_serve,
     }
     args = parser.parse_args(argv)
     handlers[args.command](args)

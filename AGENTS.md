@@ -10,7 +10,6 @@ A reverse-mode automatic differentiation engine and a decoder-only transformer l
 ## Layout
 
 - `benchmarks/`: benchmark scripts and recorded results
-- `docker-compose.yml`: local container setup
 - `docs/`: documentation, architecture diagram source and render, design records
 - `scripts/`: maintenance scripts (release, assets, data)
 - `src/`: library and service source
@@ -24,9 +23,7 @@ Key modules:
 - `src/transformer_from_scratch/evaluation.py`: Evaluation: next-token accuracy, copy-region accuracy, perplexity, baseline.
 - `src/transformer_from_scratch/inspect.py`: Inspecting what the trained model attends to.
 - `src/transformer_from_scratch/model.py`: A decoder-only transformer language model built on the autodiff engine.
-- `src/transformer_from_scratch/observability.py`: In-process request metrics for the HTTP service (Prometheus text exposition).
 - `src/transformer_from_scratch/research.py`: A causal study of how the copy task is solved, and what architecture it needs.
-- `src/transformer_from_scratch/service.py`: A standard-library HTTP service exposing the trained transformer.
 - `src/transformer_from_scratch/tensor.py`: A small reverse-mode automatic differentiation engine over dense matrices.
 - `src/transformer_from_scratch/text.py`: Character-level language modeling on real English text.
 - `src/transformer_from_scratch/training.py`: Training the transformer with an Adam optimizer written from scratch.
@@ -43,10 +40,7 @@ Key modules:
 | `make test` | Run tests |
 | `make coverage` | Tests with coverage gate |
 | `make evaluation` | Reproduce the results table |
-| `make run` | Run the HTTP service |
 | `make diagram` | Render architecture diagram to SVG |
-| `make docker-build` | Build the image |
-| `make docker-up` | Run via docker compose |
 | `make clean` | Remove caches and artifacts |
 | `make all` | Full local gate (mirror of continuous integration) |
 | `make changelog` | Regenerate CHANGELOG.md from Conventional Commits (git-cliff) |

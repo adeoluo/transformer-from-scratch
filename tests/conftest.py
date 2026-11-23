@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from transformer_from_scratch.data import CopyTask, test_sequences
+from transformer_from_scratch.data import CopyTask
 from transformer_from_scratch.model import ModelConfig
-from transformer_from_scratch.service import TransformerService
 from transformer_from_scratch.training import TrainConfig, TrainResult, train
 
 
@@ -30,12 +29,3 @@ def small_cfg(small_task: CopyTask) -> ModelConfig:
 @pytest.fixture(scope="session")
 def trained(small_task: CopyTask, small_cfg: ModelConfig) -> TrainResult:
     return train(small_task, small_cfg, TrainConfig(steps=80, batch_size=8, seed=0), log_every=80)
-
-
-@pytest.fixture(scope="session")
-def service(small_task: CopyTask, trained: TrainResult) -> TransformerService:
-    return TransformerService(
-        model=trained.model,
-        task=small_task,
-        test_set=test_sequences(small_task, count=20, seed=0),
-    )

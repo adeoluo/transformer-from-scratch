@@ -16,7 +16,6 @@ make all       # local gate: lint + type + test (mirrors continuous integration)
 
 ## Standards
 
-A pull request is ready when it meets the [Definition of Done](docs/DEFINITION_OF_DONE.md).
 Non-obvious design choices get an [ADR](docs/adr/). Every claim in the README is backed
 by a reproducible number (`make evaluation`).
 

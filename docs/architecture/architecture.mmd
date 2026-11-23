@@ -2,30 +2,26 @@ flowchart LR
     classDef edge     fill:#F59E0B,stroke:#1E293B,color:#1E293B,stroke-width:1px;
     classDef core     fill:#6366F1,stroke:#1E293B,color:#ffffff,stroke-width:1px;
     classDef data     fill:#10B981,stroke:#1E293B,color:#ffffff,stroke-width:1px;
-    classDef control  fill:#0EA5E9,stroke:#1E293B,color:#ffffff,stroke-width:1px;
     classDef obs      fill:#CBD5E1,stroke:#1E293B,color:#1E293B,stroke-width:1px;
 
-    subgraph Interfaces["Interfaces"]
+    subgraph Interfaces["CLI & Benchmarks"]
         direction TB
-        CLI["CLI<br/>train, generate, serve"]:::edge
-        Bench["Benchmarks<br/>text, research study"]:::edge
-        Client(["HTTP client"]):::edge
-        Router["HTTP router<br/>/generate /attention"]:::core
-        Validate["Validation<br/>token ids, lengths"]:::control
-        CLI ~~~ Bench ~~~ Client --> Router --> Validate
+        CLI["CLI<br/>train, evaluate, generate, attention"]:::edge
+        Bench["Benchmarks<br/>text LM, 8-seed ablation"]:::edge
+        CLI ~~~ Bench
     end
 
-    subgraph Model["Data, engine, and model"]
+    subgraph Model["Data, Autodiff & Model"]
         direction TB
         Copy[("Copy task<br/>disjoint splits")]:::data
         Corpus[("Real text<br/>Austen excerpt")]:::data
-        Tensor["Autodiff engine<br/>reverse-mode backward"]:::core
+        Tensor["Autodiff engine<br/>2-D NumPy backward"]:::core
         Net["Transformer<br/>pre-norm, causal MHA"]:::core
         Copy ~~~ Corpus
         Tensor --> Net
     end
 
-    subgraph Train["Training"]
+    subgraph Train["Training & State"]
         direction TB
         Loop["Training loop<br/>Adam from scratch"]:::core
         TextLM["Character LM<br/>train_char_lm"]:::core
@@ -33,16 +29,15 @@ flowchart LR
         TextLM ~~~ Loop --> Ckpt
     end
 
-    subgraph Obs["Evaluation and research"]
+    subgraph Obs["Verification & Analysis"]
         direction TB
         Evaluate["Evaluation<br/>copy acc, bits per char"]:::obs
         Inspect["Attention inspection<br/>sharpest head"]:::obs
         Research["Research study<br/>ablation, depth, mixer"]:::obs
-        Parity["PyTorch parity test<br/>logits match"]:::obs
-        Metrics["Route metrics<br/>Prometheus text"]:::obs
-        Evaluate ~~~ Inspect ~~~ Research ~~~ Parity ~~~ Metrics
+        Parity["PyTorch parity<br/>forward + 48 grads &lt; 1e-9"]:::obs
+        Evaluate ~~~ Inspect ~~~ Research ~~~ Parity
     end
 
-    Interfaces -->|train, serve| Train
+    Interfaces -->|run| Train
     Model -->|sequences, model| Train
     Train -->|trained models| Obs

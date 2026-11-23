@@ -1,4 +1,4 @@
-.PHONY: help setup lint format type test coverage evaluation run diagram docker-build docker-up clean all changelog cut-release
+.PHONY: help setup lint format type test coverage evaluation diagram clean all changelog cut-release
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -28,19 +28,10 @@ coverage: ## Tests with coverage gate
 evaluation: ## Reproduce the results table
 	uv run python -m transformer_from_scratch evaluate
 
-run: ## Run the HTTP service
-	uv run python -m transformer_from_scratch serve
-
 diagram: ## Render every diagram in docs/architecture to SVG (house theme, white background)
 	@for f in docs/architecture/*.mmd; do \
 		npx -y @mermaid-js/mermaid-cli -q -i "$$f" -o "$${f%.mmd}.svg" -c mermaid.config.json -b white || exit 1; \
 	done
-
-docker-build: ## Build the image
-	docker build -t transformer-from-scratch .
-
-docker-up: ## Run via docker compose
-	docker compose up --build
 
 clean: ## Remove caches and artifacts
 	rm -rf .pytest_cache .mypy_cache .ruff_cache dist build *.egg-info coverage.xml

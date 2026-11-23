@@ -42,9 +42,8 @@ output embeddings. Training uses an Adam optimizer written from scratch, on the 
 task or at the character level on a bundled real-text excerpt, and models save to and load
 from JSON checkpoints. Evaluation reports copy accuracy and perplexity against a bigram
 baseline and bits per character against a unigram baseline; the research study ablates heads
-and compares depth and attention variants; and an optional test checks the logits against
-PyTorch. The HTTP service validates requests, serves generation, evaluation, and attention
-inspection, and records per-route metrics. See the [ADRs](docs/adr/) for the key decisions.
+and compares depth and attention variants; and CI verifies forward logits, loss, and all 48
+parameter gradients against PyTorch. See the [ADRs](docs/adr/) for the key decisions.
 
 ### The autodiff engine
 
@@ -207,7 +206,6 @@ python -m transformer_from_scratch train       # train and compare to the bigram
 python -m transformer_from_scratch evaluate     # held-out accuracy and perplexity
 python -m transformer_from_scratch generate     # greedily complete a held-out prompt
 python -m transformer_from_scratch attention    # print the sharpest head's attention pattern
-python -m transformer_from_scratch serve        # start the HTTP service on :8000
 ```
 
 ## Usage
@@ -222,25 +220,6 @@ Trained 300 steps on the copy task (symbols=4, length=5).
   sharpest attention head: layer 0 head 0, peak 0.994
 ```
 
-### HTTP service
-
-A standard-library HTTP service trains once at startup, then answers generation, evaluation, and
-attention-inspection requests. The routing logic is a pure function, tested without a socket.
-
-| Method | Path | Purpose |
-|---|---|---|
-| GET | `/health` | liveness and model shape |
-| GET | `/ready` | readiness once the model is trained |
-| GET | `/metrics` | per-route request, error, and latency metrics (Prometheus text) |
-| POST | `/generate` | body `{"prompt": [int], "max_new_tokens": int?}`; greedy continuation |
-| GET | `/evaluate` | copy accuracy, overall accuracy, and perplexity on held-out data |
-| POST | `/attention` | body `{"tokens": [int], "layer": int?, "head": int?}`; attention pattern |
-
-```bash
-curl -s localhost:8000/generate -d '{"prompt": [1,2,3,4,0], "max_new_tokens": 5}'
-curl -s localhost:8000/attention -d '{"tokens": [1,2,3,4,0,1], "layer": 0, "head": 1}'
-```
-
 ### Demos
 
 Recorded from real runs with [vhs](https://github.com/charmbracelet/vhs); each tape is in `docs/demo/`.
@@ -249,12 +228,6 @@ Training the from-scratch transformer and comparing it to a bigram baseline.
 
 <p align="center">
   <img src="docs/demo/train.gif" alt="Training the from-scratch transformer and comparing it to a bigram baseline" width="860">
-</p>
-
-The HTTP service generating a continuation, then the held-out evaluation.
-
-<p align="center">
-  <img src="docs/demo/http.gif" alt="The HTTP service generating a continuation, then the held-out evaluation" width="860">
 </p>
 
 Training, then the attention pattern of the sharpest head.
@@ -279,33 +252,26 @@ make lint        # ruff format --check and ruff check
 make type        # mypy src (strict)
 make test        # pytest (all tests, including the slow end-to-end check)
 make coverage    # pytest with an 80% coverage gate
-uv sync --group validation && uv run pytest tests/test_torch_parity.py   # opt-in PyTorch parity
+uv sync --group validation && uv run pytest tests/test_torch_parity.py   # PyTorch forward + backward parity
 ```
 
-The suite in `tests/` has 54 tests:
+The suite in `tests/` covers:
 
 - `test_autograd.py`: analytic gradients against central finite differences for every parameter type, gradient accumulation into the weight-tied embedding, and random restarts.
 - `test_model.py`: tensor operations (matmul, causal softmax, layer norm), model shapes and configuration validation, disjoint data splits, training learning to copy above the bigram baseline, determinism, and attention sharpening with training.
 - `test_text.py`: the character vocabulary, the bundled prose corpus, the unigram baseline, character-level training, bits per character, and checkpoint round trips.
 - `test_research.py`: head ablation, the uniform mean-pooling mixer, parameter matching, the hypothesis verdict rules, study determinism, and an end-to-end research run (marked `slow`).
-- `test_service_cli.py`: HTTP routes through the pure routing function (no socket), input validation, metrics, and the CLI.
-- `test_torch_parity.py`: logits and cross-entropy against a PyTorch reference; skipped unless the `validation` group is installed.
+- `test_cli.py`: greedy token generation and the `train`, `evaluate`, `generate`, and `attention` CLI commands.
+- `test_torch_parity.py`: forward logits, cross-entropy loss, and all 48 backward parameter gradients verified to `< 1e-9` against PyTorch (`torch.autograd`).
 
-CI (`.github/workflows/ci.yml`) runs format, lint, type check, and the coverage-gated tests with `-m "not slow"` on Python 3.12, 3.13, 3.14 and 3.15, then builds the package and the Docker image. CodeQL runs in `codeql.yml`.
-
-## Responsible AI
-
-- **Model card:** [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md)
-- **Data card:** [`docs/DATA_CARD.md`](docs/DATA_CARD.md)
-- **Threat model:** [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md)
+CI (`.github/workflows/ci.yml`) runs format, lint, strict `mypy`, and coverage-gated `pytest` on Python 3.12, 3.13, 3.14 and 3.15 (including PyTorch parity on 3.12 and 3.13), then builds the wheel and sdist.
 
 ## Limitations
 
-- The model is tiny and trained on a synthetic copy task; it demonstrates mechanisms (backprop
-  through attention, attention-based copying), not language modeling at scale.
-- Greedy generation recomputes a full forward pass per token (no key-value cache) and runs one
-  sequence at a time, so the service sustains hundreds of requests per second (459 under the
-  stress benchmark), not tens of thousands.
+- The model is tiny and trained on a synthetic copy task and a 1,718-character prose excerpt; it
+  is a pedagogical white-box reference for matrix autodiff and attention mechanics, not language
+  modeling at scale.
+- Greedy generation recomputes a full forward pass per token (no key-value cache).
 - The copy is not implemented by a textbook induction head: the research study shows it is a
   positional lookup by one or two layer-1 heads, which the fixed-length task allows.
 
