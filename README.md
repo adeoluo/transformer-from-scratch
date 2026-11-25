@@ -13,7 +13,7 @@
 
 ---
 
-> **Evidence level: reference validated.** On every change, an automated test compares a test model with PyTorch (a widely used deep learning library). The outputs, the loss and all 48 parameter gradients agree to within 1e-9 (0.000000001). The model has been trained only on small practice tasks. Nobody else has reproduced the results, and the model is not used in production. [What the levels mean](https://github.com/adeoluo#evidence-levels).
+> **Evidence level: reference validated.** On every change, an automated test compares a test model with PyTorch (a widely used deep learning library). The outputs, the loss and all 48 parameter gradients agree to within 1e-9 (0.000000001). The model has been trained only on small practice tasks. Nobody else has reproduced the results, and the model is not used in production.
 
 ## Highlights
 
